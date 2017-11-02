@@ -1,0 +1,41 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale = 1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>UW Course Map</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="d-flex flex-column">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <span class="navbar-brand mb-0 h1">UW Course Map</span>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link active" href="#">Map</a>
+                <a class="nav-item nav-link disabled" href="#">Plan</a>
+                <a class="nav-item nav-link disabled" href="#">About</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid d-flex flex-column">
+        <div class="row d-flex flex-row">
+            <div class="col d-flex flex-column">
+                <div class="row map-wrapper">
+                    <svg id="map" width="1000" height="1000"
+                    viewBox="0 0 1000 1000"
+                    preserveAspectRatio="xMidYMid meet">
+                    </svg>
+                </div>
+            </div>
+            <div class="col options">
+                <div class="row">
+                    Content
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
