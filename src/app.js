@@ -9,17 +9,23 @@ import $ from "jquery";
 
 var courseData;
 var links = [];
-getData();
+getData().then(init, console.error).then(ready);
 
 function getData() {
-    $.getJSON("data/courses.json").done(function (data) {
+    let dataRequests = [];
+    dataRequests.push($.getJSON("data/prereqs.json").done(function(data){
+        links = data;
+        console.log(links);
+        console.log(`retrieved prereq data: (${links.length})`);
+    }).fail(console.error));
+    dataRequests.push($.getJSON("data/courses.json").done(function (data) {
         courseData = $.map(data, e => e);
 
         console.log(courseData);
         console.log(`retrieved course data: (${courseData.length})`);
-        init();
-        ready();
-    }).fail(console.error);
+
+    }).fail(console.error));
+    return Promise.all(dataRequests);
 }
 
 function init() {
@@ -34,21 +40,37 @@ function init() {
                 catalog_number: ""
             }
         }
-        links.push({
-            source: subjects[e.subject],
-            target: e
-        });
     })
+
     for (let s of Object.values(subjects)) {
         courseData.push(s);
     }
     courseData.forEach(e => {
-        e.x = 10000 * Math.random(), e.y = 10000 * Math.random();
-        e.id = `${e.subject}:${e.catalog_number}`;
+        e.x = 100 * Math.random(), e.y = 100 * Math.random();
+        e.id = `${e.subject}${e.catalog_number}`;
+    })
+    links.forEach(function(e){
+        e.source = e.prereq;
+        e.prereq = courseData.find(x=>e.prereq==x.id)
+        e.target = e.course;
+        e.course = courseData.find(x=>e.course==x.id)
+        if(!e.prereq){
+            let n = {
+                id: e.course,
+                x: 0,
+                y: 0,
+                subject: "missing",
+                catalog_number: "missing"
+            };
+            courseData.push(n);
+            e.prereq = n;
+        }
     })
 }
 
 function ready() {
+    let courses = courseData.filter(e=>e.subject=="MATH");
+    let courseLinks = links.filter(x=>x.prereq.subject=="MATH"&&x.course.subject=="MATH");
     let map = d3.select("#map")
         .attr("width", "100%")
         .attr("height", "100%")
@@ -60,50 +82,45 @@ function ready() {
     let height = +map.attr("height");
 
     let simulation = d3.forceSimulation()
-        .force("charge", d3.forceManyBody().strength(-20))
+        .force("charge", d3.forceManyBody().strength(-50))
         .force("center", d3.forceCenter(width / 2, height / 2))
-        .force("links", d3.forceLink(links)
-            .strength(1)
-            .id(function (d) {
-                return d.id;
-            }))
-        .force("collision", d3.forceCollide(40))
-    let link = map.append("g")
-        .attr("class", "links")
-        .selectAll("line")
-        .data(links)
+        .force("collision", d3.forceCollide(10))
+    var link = map.selectAll("g.link")
+        .data(courseLinks)
         .enter().append("line")
-        .attr("stroke-width", 3);
+        .attr("stroke", "#AAAAAA")
+        .attr("stroke-width", 2)
+        .attr("x1", 12).attr("y1", 12).attr("x2", 12).attr("y2", 12)
+        console.log(link);
 
     let node = map.selectAll("g.node")
-        .data(courseData)
+        .data(courses)
         .enter().append("g")
 
     node.append("circle")
         .attr("class", "node")
-        .attr("r", 2)
+        .attr("r", 6)
         .attr("fill", (d) => (d.catalog_number ? "#AAAAAA" : "#AAFFAA"))
     node.append("text")
         .attr("dy", "8pt")
         .attr("fill", "#AAAAAA")
         .text((d) => `${d.subject} ${d.catalog_number}`)
-    simulation.nodes(courseData)
+    simulation.nodes(courses)
         .on("tick", ticked);
-    simulation.force("links")
-        .links(links);
+    simulation.force("links", d3.forceLink(courseLinks));
 
     function ticked() {
         link.attr("x1", function (d) {
-                return d.source.x;
+                return d.prereq.x;
             })
             .attr("y1", function (d) {
-                return d.source.y;
+                return d.prereq.y;
             })
             .attr("x2", function (d) {
-                return d.target.x;
+                return d.course.x;
             })
             .attr("y2", function (d) {
-                return d.target.y;
+                return d.course.y;
             });
         node.attr("transform", (d) => (`translate(${d.x},${d.y})`))
     }
