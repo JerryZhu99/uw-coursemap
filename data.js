@@ -80,8 +80,9 @@ new Promise(function (resolve, reject) {
         for (let course of courses) {
             try {
                 let invalid = (course.prerequisites_parsed === "" || course.prerequisites_parsed === null);
-                let allprereqs = _.flattenDeep(invalid ? [course.subject] : course.prerequisites_parsed)
+                let allprereqs = _.flattenDeep(invalid ? [] : course.prerequisites_parsed)
                     .filter((x) => (!(typeof x == "number")));
+                if(allprereqs.length==0)allprereqs.push(course.subject);
                 for (let prereq of allprereqs) {
                     prereqs.push({
                         course: course.subject + course.catalog_number,

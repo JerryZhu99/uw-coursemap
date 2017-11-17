@@ -54,23 +54,16 @@ function init() {
         e.prereq = courseData.find(x=>e.prereq==x.id)
         e.target = e.course;
         e.course = courseData.find(x=>e.course==x.id)
-        if(!e.prereq){
-            let n = {
-                id: e.course,
-                x: 0,
-                y: 0,
-                subject: "missing",
-                catalog_number: "missing"
-            };
-            courseData.push(n);
-            e.prereq = n;
-        }
     })
 }
 
 function ready() {
-    let courses = courseData.filter(e=>e.subject=="MATH");
-    let courseLinks = links.filter(x=>x.prereq.subject=="MATH"&&x.course.subject=="MATH");
+    let courseFilter = (e=>(e.subject=="MATH"||e.subject=="PHYS")&&e.catalog_number<500)
+    let courses = courseData.filter(courseFilter);
+    let courseLinks = links
+    .filter((x)=>courseData.includes(x.prereq)&&courseData.includes(x.course))
+    .filter((x)=>courseData.some(y=>x.source==y.id)&&courseData.some(y=>x.target==y.id))
+    .filter(x=>courseFilter(x.prereq)&&courseFilter(x.course));
     let map = d3.select("#map")
         .attr("width", "100%")
         .attr("height", "100%")
@@ -82,15 +75,14 @@ function ready() {
     let height = +map.attr("height");
 
     let simulation = d3.forceSimulation()
-        .force("charge", d3.forceManyBody().strength(-50))
+        .force("charge", d3.forceManyBody().strength(-1000))
         .force("center", d3.forceCenter(width / 2, height / 2))
-        .force("collision", d3.forceCollide(10))
+
     var link = map.selectAll("g.link")
         .data(courseLinks)
         .enter().append("line")
         .attr("stroke", "#AAAAAA")
-        .attr("stroke-width", 2)
-        .attr("x1", 12).attr("y1", 12).attr("x2", 12).attr("y2", 12)
+        .attr("stroke-width", 0.5)
         console.log(link);
 
     let node = map.selectAll("g.node")
@@ -107,7 +99,7 @@ function ready() {
         .text((d) => `${d.subject} ${d.catalog_number}`)
     simulation.nodes(courses)
         .on("tick", ticked);
-    simulation.force("links", d3.forceLink(courseLinks));
+    simulation.force("links", d3.forceLink(courseLinks).id(x=>x.id).distance(100));
 
     function ticked() {
         link.attr("x1", function (d) {
