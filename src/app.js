@@ -2,8 +2,7 @@ import "d3-force";
 import * as d3 from "d3";
 import "normalize.css";
 import "bootstrap";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import "styles.css";
+import "styles.scss";
 import $ from "jquery";
 
 
@@ -81,8 +80,6 @@ function ready() {
     var link = map.selectAll("g.link")
         .data(courseLinks)
         .enter().append("line")
-        .attr("stroke", "#AAAAAA")
-        .attr("stroke-width", 0.5)
         console.log(link);
 
     let node = map.selectAll("g.node")
@@ -91,15 +88,21 @@ function ready() {
 
     node.append("circle")
         .attr("class", "node")
-        .attr("r", 6)
-        .attr("fill", (d) => (d.catalog_number ? "#AAAAAA" : "#AAFFAA"))
-    node.append("text")
-        .attr("dy", "8pt")
-        .attr("fill", "#AAAAAA")
-        .text((d) => `${d.subject} ${d.catalog_number}`)
+        .attr("r", 35)
+
+    let text = node.append("text")
+        .attr("text-anchor","middle")
+    text.append("tspan")
+        .attr("x", 0)
+        .attr("dy", "-.25rem")            
+        .text((d) => `${d.subject}`);
+    text.append("tspan")
+        .attr("x", 0)
+        .attr("dy", "1.25rem")            
+        .text((d) => `${d.catalog_number}`)
     simulation.nodes(courses)
         .on("tick", ticked);
-    simulation.force("links", d3.forceLink(courseLinks).id(x=>x.id).distance(100));
+    simulation.force("links", d3.forceLink(courseLinks).id(x=>x.id).distance(1000));
 
     function ticked() {
         link.attr("x1", function (d) {

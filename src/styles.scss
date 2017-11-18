@@ -1,3 +1,10 @@
+$theme-colors: (
+    "primary": #019faa,
+);
+
+@import "node_modules/bootstrap/scss/bootstrap";
+
+@import "map.scss";
 
 body{
     width: 100vw;
@@ -7,10 +14,7 @@ body{
 .container-fluid, .row, .col{
     flex: 1;
 }
-.map-wrapper{
-    overflow: hidden;
-    background-color: #333333;
-}
+
 .options{
     flex: none;
     width: 20vw;
