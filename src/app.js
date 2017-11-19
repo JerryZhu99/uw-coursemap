@@ -5,9 +5,16 @@ import "bootstrap";
 import "styles.scss";
 import $ from "jquery";
 
-
-var courseData;
+var search = {
+    subjects: [],
+    undergrad: true,
+    graduate: false,
+}
+var simulation;
+var courseData = [];
 var links = [];
+var link;
+var node;
 getData().then(init, console.error).then(ready);
 
 function getData() {
@@ -72,17 +79,19 @@ function ready() {
         .append("g")
     let width = +map.attr("width");
     let height = +map.attr("height");
-
-    let simulation = d3.forceSimulation()
-        .force("charge", d3.forceManyBody().strength(-1000))
+    
+    simulation = d3.forceSimulation()
+        .force("charge", d3.forceManyBody().strength(-3000))
         .force("center", d3.forceCenter(width / 2, height / 2))
+    
+    
 
-    var link = map.selectAll("g.link")
+    link = map.append("g").selectAll(".link")
         .data(courseLinks)
         .enter().append("line")
         console.log(link);
 
-    let node = map.selectAll("g.node")
+    node = map.append("g").selectAll(".node")
         .data(courses)
         .enter().append("g")
 
@@ -102,7 +111,7 @@ function ready() {
         .text((d) => `${d.catalog_number}`)
     simulation.nodes(courses)
         .on("tick", ticked);
-    simulation.force("links", d3.forceLink(courseLinks).id(x=>x.id).distance(1000));
+    simulation.force("links", d3.forceLink(courseLinks).id(x=>x.id).distance(300));
 
     function ticked() {
         link.attr("x1", function (d) {
@@ -119,7 +128,66 @@ function ready() {
             });
         node.attr("transform", (d) => (`translate(${d.x},${d.y})`))
     }
+    $("#subjectsearch").change(searchSubject);
+    
 }
+
+function getFilter(){
+    return function(e){
+        if(search.subjects.length>0&&!search.subjects.some((x)=>(x.trim().toUpperCase()==e.subject))){
+            return false;
+        }
+        if(!search.undergrad & e.catalog_number<500){
+            return false;
+        }
+        if(!search.graduate & e.catalog_number>=500){
+            return false;
+        }
+        return true;
+    }
+}
+
+function updateData(){
+    let courseFilter = getFilter();
+    let courses = courseData.filter(courseFilter);
+    let courseLinks = links
+    .filter((x)=>courses.includes(x.prereq)&&courses.includes(x.course))
+
+
+    node = node.data(courses, function(d) { return d.id;});
+    node.exit().remove();
+    node = node.enter().append("g").attr("class", "node").attr("r", 35).merge(node);
+    node.append("circle")
+    .attr("class", "node")
+    .attr("r", 35)
+    let text = node.append("text")
+        .attr("text-anchor","middle")
+    text.append("tspan")
+        .attr("x", 0)
+        .attr("dy", "-.25rem")            
+        .text((d) => `${d.subject}`);
+    text.append("tspan")
+        .attr("x", 0)
+        .attr("dy", "1.25rem")            
+        .text((d) => `${d.catalog_number}`)
+
+    link = link.data(courseLinks, function(d) { return d.source + "-" + d.target; });
+    link.exit().remove();
+    link = link.enter().append("line").merge(link);    
+
+    simulation.nodes(courses);
+    simulation.force("charge").initialize(courses);
+    simulation.force("center").initialize(courses);
+    simulation.force("links").links(courseLinks).initialize(courses);
+    simulation.alpha(1).restart();
+}
+
+function searchSubject(){
+    search.subjects = $("#subjectsearch").val().split(",");
+    updateData();
+}
+$(document).ready(function(){
+});
 export default {
     courseData,
     map
