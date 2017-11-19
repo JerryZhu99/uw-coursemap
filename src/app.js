@@ -6,7 +6,8 @@ import "styles.scss";
 import $ from "jquery";
 
 var search = {
-    subjects: [],
+    all: [""],
+    subjects: ["MATH"],
     undergrad: true,
     graduate: false,
 }
@@ -64,12 +65,11 @@ function init() {
 }
 
 function ready() {
-    let courseFilter = (e=>(e.subject=="MATH"||e.subject=="PHYS")&&e.catalog_number<500)
+    let courseFilter = getFilter()
     let courses = courseData.filter(courseFilter);
     let courseLinks = links
-    .filter((x)=>courseData.includes(x.prereq)&&courseData.includes(x.course))
-    .filter((x)=>courseData.some(y=>x.source==y.id)&&courseData.some(y=>x.target==y.id))
-    .filter(x=>courseFilter(x.prereq)&&courseFilter(x.course));
+    .filter((x)=>courses.includes(x.prereq)&&courses.includes(x.course))
+    .filter((x)=>courses.some(y=>x.source==y.id)&&courses.some(y=>x.target==y.id))
     let map = d3.select("#map")
         .attr("width", "100%")
         .attr("height", "100%")
@@ -128,19 +128,26 @@ function ready() {
             });
         node.attr("transform", (d) => (`translate(${d.x},${d.y})`))
     }
+    $("#search").change(searchGeneral);    
     $("#subjectsearch").change(searchSubject);
+    $("#undergradsearch").change(searchUndergrad);
+    $("#graduatesearch").change(searchGraduate);
     
 }
 
 function getFilter(){
     return function(e){
-        if(search.subjects.length>0&&!search.subjects.some((x)=>(x.trim().toUpperCase()==e.subject))){
+        if(e.catalog_number&&
+            !search.all.every(y=>Object.values(e).some((x)=>(String(x).includes(y.trim()))))){
             return false;
         }
-        if(!search.undergrad & e.catalog_number<500){
+        if(!search.subjects.some((x)=>(x.trim().toUpperCase()==e.subject))){
             return false;
         }
-        if(!search.graduate & e.catalog_number>=500){
+        if(!search.undergrad && parseInt(e.catalog_number)<500){
+            return false;
+        }
+        if(!search.graduate && parseInt(e.catalog_number)>=500){
             return false;
         }
         return true;
@@ -181,10 +188,21 @@ function updateData(){
     simulation.force("links").links(courseLinks).initialize(courses);
     simulation.alpha(1).restart();
 }
-
+function searchGeneral(){
+    search.all = $("#search").val().split(" ");
+    updateData();
+}
 function searchSubject(){
     search.subjects = $("#subjectsearch").val().split(",");
     updateData();
+}
+function searchUndergrad(){
+    search.undergrad = $("#undergradsearch").is(":checked");
+    updateData();
+}
+function searchGraduate(){
+    search.graduate = $("#graduatesearch").is(":checked");
+    updateData();    
 }
 $(document).ready(function(){
 });
