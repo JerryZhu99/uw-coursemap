@@ -18,7 +18,9 @@ $map-colors:(
     right: 20px;
     top: 20px;
 }
-    
+#marker{
+    fill: map-color("lines");
+}
 line{
     stroke: map-color("lines");
     stroke-width: 0.5;

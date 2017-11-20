@@ -5,8 +5,7 @@ import "bootstrap";
 import "styles.scss";
 import $ from "jquery";
 
-
-
+const radius = 35;
 
 
 var search = {
@@ -82,20 +81,30 @@ function ready() {
         .attr("width", "100%")
         .attr("height", "100%")
         .call(zoom);  
+    svg.append("defs")
+    .append("marker")
+        .attr("id", "marker")
+        .attr("refX", 18)
+        .attr("refY", 6)
+        .attr("markerWidth", 20)
+        .attr("markerHeight", 20)
+        .attr("orient", "auto")
+    .append("path")
+        .attr("d", "M0,0 L0,12 L18,6 z");
     let map = svg
         .append("g");
     let width = +map.attr("width");
     let height = +map.attr("height");
     
-    simulation = d3.forceSimulation()
+    simulation = d3.forceSimulation(courses)
         .force("charge", d3.forceManyBody().strength(-3000))
         .force("center", d3.forceCenter(width / 2, height / 2))
-    
-    
+        .force("links", d3.forceLink(courseLinks).id(x=>x.id).distance(300))
+        .on("tick", ticked);
 
     link = map.append("g").selectAll(".link")
         .data(courseLinks)
-        .enter().append("line")
+        .enter().append("line").attr("marker-end","url(#marker)")
         console.log(link);
 
     node = map.append("g").selectAll(".node")
@@ -117,11 +126,10 @@ function ready() {
         .attr("x", 0)
         .attr("dy", "1.25rem")            
         .text((d) => `${d.catalog_number}`)
-    simulation.nodes(courses)
-        .on("tick", ticked);
-    simulation.force("links", d3.forceLink(courseLinks).id(x=>x.id).distance(300));
+   
 
     function ticked() {
+        
         link.attr("x1", function (d) {
                 return d.prereq.x;
             })
@@ -129,10 +137,14 @@ function ready() {
                 return d.prereq.y;
             })
             .attr("x2", function (d) {
-                return d.course.x;
+                let dist = Math.hypot(d.course.x-d.prereq.x,d.course.y-d.prereq.y);
+                let dx = (d.course.x-d.prereq.x)/dist;
+                return d.course.x-dx*radius;
             })
             .attr("y2", function (d) {
-                return d.course.y;
+                let dist = Math.hypot(d.course.x-d.prereq.x,d.course.y-d.prereq.y);
+                let dy = (d.course.y-d.prereq.y)/dist;
+                return d.course.y-dy*radius;
             });
         node.attr("transform", (d) => (`translate(${d.x},${d.y})`))
     }
@@ -216,7 +228,7 @@ function updateData(){
     node = node.merge(enter);
     link = link.data(courseLinks, function(d) { return d.source + "-" + d.target; });
     link.exit().remove();
-    link = link.enter().append("line").merge(link);    
+    link = link.enter().append("line").attr("marker-end","url(#marker)").merge(link);    
 
     simulation.nodes(courses);
     simulation.force("charge").initialize(courses);
