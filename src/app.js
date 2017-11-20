@@ -6,23 +6,7 @@ import "styles.scss";
 import $ from "jquery";
 
 
-var facultyMap = {
-    "ART": "#D93F00",
-    "AHS": "#005963",
-    "ENG": "#57058B",
-    "ENV": "#607000",
-    "MAT": "#C60078",
-    "SCI": "#0033BE",
-    "VPA": "#80001F",
-    "REN": "#00693C",
-    "STJ": "#C88A11",
-    "STP": "#879637",
-    "CGC": "#C4262E",
-}
-function subjectColors(subject){
-    var faculty = subjects.find((x)=>(x.subject == subject));
-    return faculty?facultyMap[faculty.group]:"#E4B429";
-}
+
 
 
 var search = {
@@ -90,14 +74,16 @@ function ready() {
     let courses = courseData.filter(courseFilter);
     let courseLinks = links
     .filter((x)=>courses.includes(x.prereq)&&courses.includes(x.course))
-    .filter((x)=>courses.some(y=>x.source==y.id)&&courses.some(y=>x.target==y.id))
-    let map = d3.select("#map")
+    .filter((x)=>courses.some(y=>x.source==y.id)&&courses.some(y=>x.target==y.id));
+    let zoom = d3.zoom().on("zoom", function () {
+        map.attr("transform", d3.event.transform)
+    });
+    let svg = d3.select("#map")
         .attr("width", "100%")
         .attr("height", "100%")
-        .call(d3.zoom().on("zoom", function () {
-            map.attr("transform", d3.event.transform)
-        }))
-        .append("g")
+        .call(zoom);  
+    let map = svg
+        .append("g");
     let width = +map.attr("width");
     let height = +map.attr("height");
     
@@ -150,11 +136,40 @@ function ready() {
             });
         node.attr("transform", (d) => (`translate(${d.x},${d.y})`))
     }
+    $("#center-button").click(()=>{
+        svg.transition(500).call(zoom.transform, d3.zoomIdentity)
+    });    
+    
     $("#search").change(searchGeneral);    
     $("#subjectsearch").change(searchSubject);
     $("#undergradsearch").change(searchUndergrad);
     $("#graduatesearch").change(searchGraduate);
     
+}
+var facultyMap = {
+    "ART": ["#D93F00","#FBAF00"],
+    "AHS": ["#005963","#00BED0"],
+    "ENG": ["#57058B","#BE33DA"],
+    "ENV": ["#607000","#BED500"],
+    "MAT": ["#C60078","#FF63AA"],
+    "SCI": ["#0033BE","#63A0FF"],
+    "VPA": ["#80001F","#E41740"],
+    "REN": ["#00693C","#DE3831"],
+    "STJ": ["#C88A11","#C88A11"],
+    "STP": ["#879637","#584528"],
+    "CGC": ["#C4262E","#C4262E"],
+}
+var coloursUsed = {};
+var facultyIndices = {};
+function subjectColors(subject){
+    if(coloursUsed[subject])return coloursUsed[subject];
+    let faculty = subjects.find((x)=>(x.subject == subject));
+    if(!facultyIndices[faculty])facultyIndices[faculty]=0;
+    let index = facultyIndices[faculty];
+    let color = faculty?facultyMap[faculty.group][index%2]:"#E4B429";
+    coloursUsed[subject] = color;
+    facultyIndices[faculty]++;
+    return color;
 }
 
 function getFilter(){
@@ -181,16 +196,14 @@ function updateData(){
     let courses = courseData.filter(courseFilter);
     let courseLinks = links
     .filter((x)=>courses.includes(x.prereq)&&courses.includes(x.course))
-
-
     node = node.data(courses, function(d) { return d.id;});
     node.exit().remove();
-    node = node.enter().append("g").attr("class", "node").attr("r", 35).merge(node);
-    node.append("circle")
+    let enter = node.enter().append("g")
+    enter.append("circle")
     .attr("class", "node")
     .attr("r", 35)
     .attr("style", d=>"fill:"+subjectColors(d.subject));
-    let text = node.append("text")
+    let text = enter.append("text")
         .attr("text-anchor","middle")
     text.append("tspan")
         .attr("x", 0)
@@ -200,7 +213,7 @@ function updateData(){
         .attr("x", 0)
         .attr("dy", "1.25rem")            
         .text((d) => `${d.catalog_number}`)
-
+    node = node.merge(enter);
     link = link.data(courseLinks, function(d) { return d.source + "-" + d.target; });
     link.exit().remove();
     link = link.enter().append("line").merge(link);    

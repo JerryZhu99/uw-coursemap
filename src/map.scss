@@ -13,7 +13,12 @@ $map-colors:(
     overflow: hidden;
     background-color: map-color("bg");
 }
-
+#center-button{
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+    
 line{
     stroke: map-color("lines");
     stroke-width: 0.5;
