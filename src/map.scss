@@ -1,9 +1,9 @@
 
 $map-colors:(
     "primary": theme-color("primary"),
-    "bg": desaturate(lighten(theme-color("primary"), 50%), 80%),
+    "bg": gray("100"),
     "bg-light": desaturate(lighten(theme-color("primary"), 60%), 80%),
-    "lines": desaturate(theme-color("primary"), 80%)
+    "lines": gray("700")
 );
 
 @function map-color($key: "primary") {
@@ -25,7 +25,7 @@ g{
             stroke: map-color("lines");
         }
         text{
-            fill: theme-color("dark");    
+            fill: theme-color("light");    
         }
         &:hover{
             >circle{

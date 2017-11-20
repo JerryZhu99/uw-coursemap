@@ -5,6 +5,26 @@ import "bootstrap";
 import "styles.scss";
 import $ from "jquery";
 
+
+var facultyMap = {
+    "ART": "#D93F00",
+    "AHS": "#005963",
+    "ENG": "#57058B",
+    "ENV": "#607000",
+    "MAT": "#C60078",
+    "SCI": "#0033BE",
+    "VPA": "#80001F",
+    "REN": "#00693C",
+    "STJ": "#C88A11",
+    "STP": "#879637",
+    "CGC": "#C4262E",
+}
+function subjectColors(subject){
+    var faculty = subjects.find((x)=>(x.subject == subject));
+    return faculty?facultyMap[faculty.group]:"#E4B429";
+}
+
+
 var search = {
     all: [""],
     subjects: ["MATH"],
@@ -12,6 +32,7 @@ var search = {
     graduate: false,
 }
 var simulation;
+var subjects = [];
 var courseData = [];
 var links = [];
 var link;
@@ -22,15 +43,15 @@ function getData() {
     let dataRequests = [];
     dataRequests.push($.getJSON("data/prereqs.json").done(function(data){
         links = data;
-        console.log(links);
         console.log(`retrieved prereq data: (${links.length})`);
     }).fail(console.error));
     dataRequests.push($.getJSON("data/courses.json").done(function (data) {
-        courseData = $.map(data, e => e);
-
-        console.log(courseData);
+        courseData = data;
         console.log(`retrieved course data: (${courseData.length})`);
-
+    }).fail(console.error));
+    dataRequests.push($.getJSON("data/subjects.json").done(function (data) {
+        subjects = data;
+        console.log(`retrieved subject data: (${subjects.length})`);
     }).fail(console.error));
     return Promise.all(dataRequests);
 }
@@ -98,6 +119,7 @@ function ready() {
     node.append("circle")
         .attr("class", "node")
         .attr("r", 35)
+        .attr("style", d=>"fill:"+subjectColors(d.subject));        
 
     let text = node.append("text")
         .attr("text-anchor","middle")
@@ -167,6 +189,7 @@ function updateData(){
     node.append("circle")
     .attr("class", "node")
     .attr("r", 35)
+    .attr("style", d=>"fill:"+subjectColors(d.subject));
     let text = node.append("text")
         .attr("text-anchor","middle")
     text.append("tspan")

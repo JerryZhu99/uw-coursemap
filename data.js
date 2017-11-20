@@ -6,6 +6,21 @@ const _ = require('lodash');
 console.log("fetching data");
 
 new Promise(function (resolve, reject) {
+    fs.exists(__dirname + "/build/data/subjects.json",
+        (exists) => (exists ? resolve() : reject()));
+    }).then(function(){
+        console.log("subjects.json found")
+    },function(){
+        console.log("subjects.json not found, requesting data")
+        return uwapi.codesSubjects().then(function (subjects) {
+            console.log("subject info found: " + subjects.length);
+            fs.writeFile(__dirname + "/build/data/subjects.json", JSON.stringify(subjects, null, 2), console.error);
+            console.log("subject info saved: " + __dirname + "/build/data/subjects.json");
+            return subjects;
+        }, console.error);
+    })
+
+new Promise(function (resolve, reject) {
         fs.exists(__dirname + "/build/data/courses.json",
             (exists) => (exists ? resolve() : reject()));
     })

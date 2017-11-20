@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Oxygen');
+$font-family-base: "Open Sans";
+$headings-font-family: "Oxygen";
 $theme-colors: (
     "primary": #019faa,
 );
@@ -14,9 +17,13 @@ body{
 .container-fluid, .row, .col{
     flex: 1;
 }
-
+.navbar{
+    z-index: 20;
+}
 .options{
     flex: none;
     width: 20vw;
     min-width: 240px;
+    padding-top: 15px;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.3)
 }
