@@ -1,6 +1,6 @@
 import "d3-force";
 import * as d3 from "d3";
-import * as Search from "search";
+import * as search from "search";
 
 
 export var courses;
@@ -46,7 +46,7 @@ export function init(width, height) {
         e.course = courseData.find(x=>e.course==x.id)
     })
 
-    let courseFilter = Search.getFilter()
+    let courseFilter = search.getFilter;
     courses = courseData.filter(courseFilter);
     courseLinks = links
     .filter((x)=>courses.includes(x.prereq)&&courses.includes(x.course))
@@ -58,17 +58,13 @@ export function init(width, height) {
     .force("links", d3.forceLink(courseLinks).id(x=>x.id).distance(300))
 }
 
-export function updateData(){
-    console.log(courseLinks);
-    let courseFilter = Search.getFilter()
-    courses = courseData.filter(courseFilter);
+export function updateData(filter){
+    courses = courseData.filter(filter);
     courseLinks = links
     .filter((x)=>courses.includes(x.prereq)&&courses.includes(x.course))
     simulation.nodes(courses);
     simulation.force("charge").initialize(courses);
     simulation.force("center").initialize(courses);
     simulation.force("links").links(courseLinks).initialize(courses);
-    simulation.alpha(1).restart();
-    console.log(courseLinks);
-    
+    simulation.alpha(1).restart();   
 }

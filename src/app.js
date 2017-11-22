@@ -5,16 +5,16 @@ import "bootstrap";
 import "styles.scss";
 import $ from "jquery";
 
-import * as Search from "search";
-import * as CourseMap from "coursemap";
-import * as Simulation from "simulation";
+import * as search from "search";
+import * as courseMap from "coursemap";
+import * as simulation from "simulation";
 
-Simulation.getData().then(ready, console.error)
+simulation.getData().then(ready, console.error)
 
 function ready() {
-    Simulation.init($("#map").width(),$("#map").height());
-    CourseMap.init();
-    Search.init();
+    simulation.init($("#map").width(),$("#map").height());
+    courseMap.init();
+    search.init();
 }
 
 

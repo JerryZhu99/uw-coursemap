@@ -1,9 +1,9 @@
 import $ from "jquery";
-import * as Simulation from "simulation";
-import * as CourseMap from "coursemap";
+import * as simulation from "simulation";
+import * as courseMap from "coursemap";
 
 var search = {
-    all: [""],
+    general: [""],
     subjects: ["MATH"],
     undergrad: true,
     graduate: false,
@@ -16,27 +16,31 @@ export function init(){
     $("#graduatesearch").change(searchGraduate);
 }
 
-export function getFilter(){
-    return function(e){
-        if(e.catalog_number&&
-            !search.all.every(y=>Object.values(e).some((x)=>(String(x).includes(y.trim()))))){
-            return false;
-        }
-        if(!search.subjects.some((x)=>(x.trim().toUpperCase()==e.subject))){
-            return false;
-        }
-        if(!search.undergrad && parseInt(e.catalog_number)<500){
-            return false;
-        }
-        if(!search.graduate && parseInt(e.catalog_number)>=500){
-            return false;
-        }
+export function getFilter(e){
+    if(!search.subjects.some((x)=>(x.trim().toUpperCase()==e.subject))){
+        return false;
+    }
+    if(!search.undergrad && parseInt(e.catalog_number)<500){
+        return false;
+    }
+    if(!search.graduate && parseInt(e.catalog_number)>=500){
+        return false;
+    }
+    return true;
+}
+export function getHighlight(e){
+    if(search.general.length == 1&&search.general[0] == ""){
         return true;
     }
+    if(!search.general.every(
+        s=>(Object.values(e).some(v=>String(v).includes(s.trim())))
+    )){
+        return false;
+    }
+    return true;
 }
-
 function searchGeneral(){
-    search.all = $("#search").val().split(" ");
+    search.general = $("#search").val().split(" ");
     updateData();
 }
 function searchSubject(){
@@ -52,6 +56,6 @@ function searchGraduate(){
     updateData();    
 }
 function updateData(){
-    Simulation.updateData();    
-    CourseMap.update();
+    simulation.updateData(getFilter);    
+    courseMap.update(getHighlight);
 }

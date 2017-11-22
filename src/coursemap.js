@@ -3,7 +3,10 @@ import * as d3 from "d3";
 import * as simulation from "simulation" 
 import * as search from "search";
 
-const radius = 35;
+const RADIUS = 35;
+const BORDER_WIDTH = 0.5;
+const ARROW_WIDTH = 12;
+const ARROW_LENGTH = 18;
 
 var facultyMap = {
     "ART": ["#D93F00", "#FBAF00"],
@@ -48,13 +51,13 @@ export function init() {
     svg.append("defs")
     .append("marker")
         .attr("id", "marker")
-        .attr("refX", 18)
-        .attr("refY", 6)
-        .attr("markerWidth", 20)
-        .attr("markerHeight", 20)
+        .attr("refX", ARROW_LENGTH)
+        .attr("refY", ARROW_WIDTH/2)
+        .attr("markerWidth", ARROW_LENGTH)
+        .attr("markerHeight", ARROW_WIDTH)
         .attr("orient", "auto")
     .append("path")
-        .attr("d", "M0,0 L0,12 L18,6 z");
+        .attr("d", `M0,0 L0,${ARROW_WIDTH} L${ARROW_LENGTH},${ARROW_WIDTH/2} z`);
     let map = svg.append("g");
     let width = +map.attr("width");
     let height = +map.attr("height");
@@ -66,6 +69,7 @@ export function init() {
     node = map.append("g").selectAll(".node")
         .data(courses)
         .enter().append("g")
+
 
     node.append("circle")
         .attr("class", "node")
@@ -91,8 +95,7 @@ export function init() {
     });
 
 }
-
-export function update() {
+export function update(highlightFilter) {
     let courses = simulation.courses;
     let courseLinks = simulation.courseLinks;
     node = node.data(courses, function (d) {
@@ -100,6 +103,7 @@ export function update() {
     });
     node.exit().remove();
     let enter = node.enter().append("g")
+    
     enter.append("circle")
         .attr("class", "node")
         .attr("r", 35)
@@ -120,23 +124,30 @@ export function update() {
     });
     link.exit().remove();
     link = link.enter().append("line").attr("marker-end", "url(#marker)").merge(link);
+
+    node.attr("opacity", d=>(highlightFilter(d)?1:0.25))
+    link.attr("opacity", d=>((highlightFilter(d.course)||highlightFilter(d.prereq))?1:0.25))    
 }
 export function ticked() {
     link.attr("x1", function (d) {
-            return d.prereq.x;
+            let dist = Math.hypot(d.course.x - d.prereq.x, d.course.y - d.prereq.y);
+            let dx = (d.course.x - d.prereq.x) / dist;
+            return d.prereq.x + dx * (RADIUS + BORDER_WIDTH);
         })
         .attr("y1", function (d) {
-            return d.prereq.y;
+            let dist = Math.hypot(d.course.x - d.prereq.x, d.course.y - d.prereq.y);
+            let dy = (d.course.y - d.prereq.y) / dist;
+            return d.prereq.y + dy * (RADIUS + BORDER_WIDTH);
         })
         .attr("x2", function (d) {
             let dist = Math.hypot(d.course.x - d.prereq.x, d.course.y - d.prereq.y);
             let dx = (d.course.x - d.prereq.x) / dist;
-            return d.course.x - dx * radius;
+            return d.course.x - dx * (RADIUS + BORDER_WIDTH);
         })
         .attr("y2", function (d) {
             let dist = Math.hypot(d.course.x - d.prereq.x, d.course.y - d.prereq.y);
             let dy = (d.course.y - d.prereq.y) / dist;
-            return d.course.y - dy * radius;
+            return d.course.y - dy * (RADIUS + BORDER_WIDTH);
         });
     node.attr("transform", (d) => (`translate(${d.x},${d.y})`))
 }
