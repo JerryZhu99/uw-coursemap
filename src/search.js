@@ -1,5 +1,6 @@
 import $ from "jquery";
-import {updateData} from "app";
+import * as Simulation from "simulation";
+import * as CourseMap from "coursemap";
 
 var search = {
     all: [""],
@@ -49,4 +50,8 @@ function searchUndergrad(){
 function searchGraduate(){
     search.graduate = $("#graduatesearch").is(":checked");
     updateData();    
+}
+function updateData(){
+    Simulation.updateData();    
+    CourseMap.update();
 }
