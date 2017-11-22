@@ -5,15 +5,12 @@ import "bootstrap";
 import "styles.scss";
 import $ from "jquery";
 
+import * as search from "search"
+
 const radius = 35;
 
 
-var search = {
-    all: [""],
-    subjects: ["MATH"],
-    undergrad: true,
-    graduate: false,
-}
+
 var simulation;
 var subjects = [];
 var courseData = [];
@@ -69,7 +66,7 @@ function init() {
 }
 
 function ready() {
-    let courseFilter = getFilter()
+    let courseFilter = search.getFilter()
     let courses = courseData.filter(courseFilter);
     let courseLinks = links
     .filter((x)=>courses.includes(x.prereq)&&courses.includes(x.course))
@@ -152,10 +149,7 @@ function ready() {
         svg.transition(500).call(zoom.transform, d3.zoomIdentity)
     });    
     
-    $("#search").change(searchGeneral);    
-    $("#subjectsearch").change(searchSubject);
-    $("#undergradsearch").change(searchUndergrad);
-    $("#graduatesearch").change(searchGraduate);
+    search.init();
     
 }
 var facultyMap = {
@@ -184,27 +178,8 @@ function subjectColors(subject){
     return color;
 }
 
-function getFilter(){
-    return function(e){
-        if(e.catalog_number&&
-            !search.all.every(y=>Object.values(e).some((x)=>(String(x).includes(y.trim()))))){
-            return false;
-        }
-        if(!search.subjects.some((x)=>(x.trim().toUpperCase()==e.subject))){
-            return false;
-        }
-        if(!search.undergrad && parseInt(e.catalog_number)<500){
-            return false;
-        }
-        if(!search.graduate && parseInt(e.catalog_number)>=500){
-            return false;
-        }
-        return true;
-    }
-}
-
-function updateData(){
-    let courseFilter = getFilter();
+export function updateData(){
+    let courseFilter = search.getFilter();
     let courses = courseData.filter(courseFilter);
     let courseLinks = links
     .filter((x)=>courses.includes(x.prereq)&&courses.includes(x.course))
@@ -236,25 +211,4 @@ function updateData(){
     simulation.force("links").links(courseLinks).initialize(courses);
     simulation.alpha(1).restart();
 }
-function searchGeneral(){
-    search.all = $("#search").val().split(" ");
-    updateData();
-}
-function searchSubject(){
-    search.subjects = $("#subjectsearch").val().split(",");
-    updateData();
-}
-function searchUndergrad(){
-    search.undergrad = $("#undergradsearch").is(":checked");
-    updateData();
-}
-function searchGraduate(){
-    search.graduate = $("#graduatesearch").is(":checked");
-    updateData();    
-}
-$(document).ready(function(){
-});
-export default {
-    courseData,
-    map
-};
+
