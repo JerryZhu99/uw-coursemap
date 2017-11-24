@@ -70,6 +70,7 @@ export function init() {
         .data(courses)
         .enter().append("g")
 
+    node.on("click", search.showDetails)
 
     node.append("circle")
         .attr("class", "node")
@@ -103,6 +104,7 @@ export function update(highlightFilter) {
     });
     node.exit().remove();
     let enter = node.enter().append("g")
+    enter.on("click", search.showDetails)
     
     enter.append("circle")
         .attr("class", "node")

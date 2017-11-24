@@ -20,10 +20,10 @@ export function getFilter(e){
     if(!search.subjects.some((x)=>(x.trim().toUpperCase()==e.subject))){
         return false;
     }
-    if(!search.undergrad && parseInt(e.catalog_number)<500){
+    if(!search.undergrad && e.academic_level == "undergraduate"){
         return false;
     }
-    if(!search.graduate && parseInt(e.catalog_number)>=500){
+    if(!search.graduate && e.academic_level == "graduate"){
         return false;
     }
     return true;
@@ -36,8 +36,9 @@ export function getHighlight(e){
         s=>([
             e.subject,
             e.catalog_number,
-            e.title
-        ].some(v=>String(v).includes(s.trim())))
+            e.title,
+            e.description
+        ].some(v=>String(v).toUpperCase().includes(s.trim().toUpperCase())))
     )){
         return false;
     }
@@ -62,4 +63,13 @@ function searchGraduate(){
 function updateData(){
     simulation.updateData(getFilter);    
     courseMap.update(getHighlight);
+}
+
+export function showDetails(e){
+    $(".panel").hide();
+    $("#details-panel").show();
+    $("#course-name").text(e.title);
+    $("#course-code").text(`${e.subject} ${e.catalog_number}`);
+    $("#course-description").text(e.description);
+    
 }

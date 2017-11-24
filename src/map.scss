@@ -17,6 +17,7 @@ $map-colors:(
     position: absolute;
     right: 20px;
     top: 20px;
+    cursor: pointer;
 }
 #marker{
     fill: map-color("lines");
@@ -27,6 +28,8 @@ line{
 }
 g{
     >g{
+        cursor: pointer;
+        
         >circle{
             fill: map-color("bg-light");
             stroke: map-color("lines");

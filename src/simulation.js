@@ -18,7 +18,7 @@ export function getData() {
         links = data;
         console.log(`retrieved prereq data: (${links.length})`);
     }).fail(console.error));
-    dataRequests.push($.getJSON("data/courses.json").done(function (data) {
+    dataRequests.push($.getJSON("data/details.json").done(function (data) {
         courseData = data;
         console.log(`retrieved course data: (${courseData.length})`);
     }).fail(console.error));
