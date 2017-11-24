@@ -33,7 +33,11 @@ export function getHighlight(e){
         return true;
     }
     if(!search.general.every(
-        s=>(Object.values(e).some(v=>String(v).includes(s.trim())))
+        s=>([
+            e.subject,
+            e.catalog_number,
+            e.title
+        ].some(v=>String(v).includes(s.trim())))
     )){
         return false;
     }
