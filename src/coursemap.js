@@ -24,8 +24,11 @@ var facultyMap = {
 var coloursUsed = {};
 var facultyIndices = {};
 
+var svg, map;
+var zoom;
 var link;
 var node;
+
 
 function subjectColors(subject) {
     if (coloursUsed[subject]) return coloursUsed[subject];
@@ -41,10 +44,10 @@ function subjectColors(subject) {
 export function init() {
     let courses = simulation.courses;
     let courseLinks = simulation.courseLinks;
-    let zoom = d3.zoom().on("zoom", function () {
+    zoom = d3.zoom().on("zoom", function () {
         map.attr("transform", d3.event.transform)
     });
-    let svg = d3.select("#map")
+    svg = d3.select("#map")
         .attr("width", "100%")
         .attr("height", "100%")
         .call(zoom);  
@@ -58,7 +61,7 @@ export function init() {
         .attr("orient", "auto")
     .append("path")
         .attr("d", `M0,0 L0,${ARROW_WIDTH} L${ARROW_LENGTH},${ARROW_WIDTH/2} z`);
-    let map = svg.append("g");
+    map = svg.append("g");
     let width = +map.attr("width");
     let height = +map.attr("height");
     link = map.append("g").selectAll(".link")
@@ -152,4 +155,10 @@ export function ticked() {
             return d.course.y - dy * (RADIUS + BORDER_WIDTH);
         });
     node.attr("transform", (d) => (`translate(${d.x},${d.y})`))
+}
+
+export function zoomTo(node){
+    let offset = 500;
+    svg.transition(500).call(zoom.transform, d3.zoomIdentity.translate(offset-node.x, offset-node.y));
+    
 }

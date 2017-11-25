@@ -33,7 +33,8 @@
                     </svg>
                 </div>
             </div>
-            <div class="col options">
+            <div id="resize"></div>
+            <div id="options" class="col">
                 <div id="main-panel" class="panel">
                     <h2>
                         Course Map
@@ -46,6 +47,7 @@
                             <input class="form-control" id="search" type="text">
                         </div>
                     </form>
+                    <div id="search-results" class="list-group"></div>
                     <h3>
                         Options
                     </h3>
@@ -75,9 +77,16 @@
                         &laquo; Back
                     </a>
                     <hr>
-                    <h2 id="course-name"></h2>
-                    <p id="course-code"></p>
-                    <p id="course-description"></p>
+                    <h2 class="course-name"></h2>
+                    <p class="course-code text-primary font-weight-bold"></p>
+                    <p class="course-description"></p>
+                    <p class="course-prereqs"></p>
+                    <p class="course-coreqs"></p>
+                    <p class="course-antireqs"></p>
+                    <p class="course-dept-consent font-italic"></p>
+                    <p class="course-instr-consent font-italic"></p>
+                    <hr>
+                    <a class="course-link">Calendar Link</a>
                 </div>
             </div>
         </div>
