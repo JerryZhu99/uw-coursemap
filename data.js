@@ -47,11 +47,11 @@ new Promise(function (resolve, reject) {
         let delay = 0;
         courses.forEach(function (c) {
             coursePromises.push(new Promise(function (resolve, reject) {
-                fs.exists(__dirname + "/build/data/prereqs/" + c.subject +" "+ c.catalog_number + ".json",
+                fs.exists(__dirname + "/temp/prereqs/" + c.subject +" "+ c.catalog_number + ".json",
                     (exists) => (exists ? resolve() : reject()));
             }).then(function () {
                 return new Promise(function (resolve, reject) {
-                    fs.readFile(__dirname + "/build/data/prereqs/" + c.subject +" "+ c.catalog_number + ".json",
+                    fs.readFile(__dirname + "/temp/prereqs/" + c.subject +" "+ c.catalog_number + ".json",
                         (err, data) => (err ? reject(err) : resolve(JSON.parse(data))));
                 });
             }).catch(function () {
@@ -64,7 +64,7 @@ new Promise(function (resolve, reject) {
                             .then(function (prereqs) {
                                 if (prereqs.subject) {
                                     console.log(prereqs.subject + " " + prereqs.catalog_number);
-                                    fs.writeFileSync(__dirname + "/build/data/prereqs/" + c.subject +" "+ c.catalog_number + ".json", JSON.stringify(prereqs, null, 2));
+                                    fs.writeFileSync(__dirname + "/temp/prereqs/" + c.subject +" "+ c.catalog_number + ".json", JSON.stringify(prereqs, null, 2));
                                     resolve(prereqs);
                                 } else {
                                     console.log("no prereqs: " + c.subject + " " + c.catalog_number);
@@ -75,7 +75,7 @@ new Promise(function (resolve, reject) {
                                         prerequisites: '',
                                         prerequisites_parsed: []
                                     }
-                                    fs.writeFileSync(__dirname + "/build/data/prereqs/" + c.subject +" "+ c.catalog_number + ".json", JSON.stringify(prereqs, null, 2));
+                                    fs.writeFileSync(__dirname + "/temp/prereqs/" + c.subject +" "+ c.catalog_number + ".json", JSON.stringify(prereqs, null, 2));
                                     resolve(prereqs);
                                 }
                             }, function (error) {
@@ -121,11 +121,11 @@ new Promise(function (resolve, reject) {
         let delay = 0;
         courses.forEach(function (c) {
             coursePromises.push(new Promise(function (resolve, reject) {
-                fs.exists(__dirname + "/build/data/details/" + c.subject +" "+ c.catalog_number + ".json",
+                fs.exists(__dirname + "/temp/details/" + c.subject +" "+ c.catalog_number + ".json",
                     (exists) => (exists ? resolve() : reject()));
             }).then(function () {
                 return new Promise(function (resolve, reject) {
-                    fs.readFile(__dirname + "/build/data/details/" + c.subject +" "+ c.catalog_number + ".json",
+                    fs.readFile(__dirname + "/temp/details/" + c.subject +" "+ c.catalog_number + ".json",
                         (err, data) => (err ? reject(err) : resolve(JSON.parse(data))));
                 });
             }).catch(function () {
@@ -139,7 +139,7 @@ new Promise(function (resolve, reject) {
                                 if (details.subject) {
                                     details = Object.assign(c,details);
                                     console.log(details.subject + " " + details.catalog_number);
-                                    fs.writeFileSync(__dirname + "/build/data/details/" + c.subject +" "+ c.catalog_number + ".json", JSON.stringify(details, null, 2));
+                                    fs.writeFileSync(__dirname + "/temp/details/" + c.subject +" "+ c.catalog_number + ".json", JSON.stringify(details, null, 2));
                                     resolve(details);
                                 } else {
                                     console.log("no details: " + c.subject + " " + c.catalog_number);
@@ -151,7 +151,7 @@ new Promise(function (resolve, reject) {
                                         prerequisites_parsed: []
                                     }
                                     details = Object.assign(c,details);                                    
-                                    fs.writeFileSync(__dirname + "/build/data/details/" + c.subject +" "+ c.catalog_number + ".json", JSON.stringify(details, null, 2));
+                                    fs.writeFileSync(__dirname + "/temp/details/" + c.subject +" "+ c.catalog_number + ".json", JSON.stringify(details, null, 2));
                                     resolve(details);
                                 }
                             }, function (error) {

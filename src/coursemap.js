@@ -35,7 +35,8 @@ function subjectColors(subject) {
     let faculty = simulation.subjects.find((x) => (x.subject == subject));
     if (!facultyIndices[faculty]) facultyIndices[faculty] = 0;
     let index = facultyIndices[faculty];
-    let color = faculty ? facultyMap[faculty.group][index % 2] : "#E4B429";
+    let color = "#E4B429";
+    if(faculty && facultyMap[faculty.group]) color = facultyMap[faculty.group][index % 2];
     coloursUsed[subject] = color;
     facultyIndices[faculty]++;
     return color;

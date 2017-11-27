@@ -20,6 +20,7 @@ export function init() {
 }
 
 export function getFilter(e) {
+    return true;
     if (!search.subjects.some((x) => (x.trim().toUpperCase() == e.subject))) {
         return false;
     }
