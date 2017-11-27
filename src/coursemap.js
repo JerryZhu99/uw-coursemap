@@ -1,6 +1,6 @@
 import "d3-force";
 import * as d3 from "d3";
-import * as simulation from "simulation" 
+import * as simulation from "simulation"
 import * as search from "search";
 
 const RADIUS = 35;
@@ -50,16 +50,16 @@ export function init() {
     svg = d3.select("#map")
         .attr("width", "100%")
         .attr("height", "100%")
-        .call(zoom);  
+        .call(zoom);
     svg.append("defs")
-    .append("marker")
+        .append("marker")
         .attr("id", "marker")
         .attr("refX", ARROW_LENGTH)
-        .attr("refY", ARROW_WIDTH/2)
+        .attr("refY", ARROW_WIDTH / 2)
         .attr("markerWidth", ARROW_LENGTH)
         .attr("markerHeight", ARROW_WIDTH)
         .attr("orient", "auto")
-    .append("path")
+        .append("path")
         .attr("d", `M0,0 L0,${ARROW_WIDTH} L${ARROW_LENGTH},${ARROW_WIDTH/2} z`);
     map = svg.append("g");
     let width = +map.attr("width");
@@ -84,7 +84,7 @@ export function init() {
         .attr("text-anchor", "middle")
     text.append("tspan")
         .attr("x", 0)
-        .attr("dy", "-.25rem")
+        .attr("dy", d => (!d.isSubject ? "-.25rem" : "0.25rem"))
         .text((d) => `${d.subject}`);
     text.append("tspan")
         .attr("x", 0)
@@ -92,8 +92,8 @@ export function init() {
         .text((d) => `${d.catalog_number}`)
 
     simulation.simulation.on("tick", ticked);
-    
-    
+
+
     $("#center-button").click(() => {
         svg.transition(500).call(zoom.transform, d3.zoomIdentity)
     });
@@ -108,7 +108,7 @@ export function update(highlightFilter) {
     node.exit().remove();
     let enter = node.enter().append("g")
     enter.on("click", search.showDetails)
-    
+
     enter.append("circle")
         .attr("class", "node")
         .attr("r", 35)
@@ -117,7 +117,7 @@ export function update(highlightFilter) {
         .attr("text-anchor", "middle")
     text.append("tspan")
         .attr("x", 0)
-        .attr("dy", "-.25rem")
+        .attr("dy", d => (!d.isSubject ? "-.25rem" : "0.25rem"))
         .text((d) => `${d.subject}`);
     text.append("tspan")
         .attr("x", 0)
@@ -130,8 +130,8 @@ export function update(highlightFilter) {
     link.exit().remove();
     link = link.enter().append("line").attr("marker-end", "url(#marker)").merge(link);
 
-    node.attr("opacity", d=>(highlightFilter(d)?1:0.25))
-    link.attr("opacity", d=>((highlightFilter(d.course)||highlightFilter(d.prereq))?1:0.25))    
+    node.attr("opacity", d => (highlightFilter(d) ? 1 : 0.25))
+    link.attr("opacity", d => ((highlightFilter(d.course) || highlightFilter(d.prereq)) ? 1 : 0.25))
 }
 export function ticked() {
     link.attr("x1", function (d) {
@@ -157,8 +157,8 @@ export function ticked() {
     node.attr("transform", (d) => (`translate(${d.x},${d.y})`))
 }
 
-export function zoomTo(node){
+export function zoomTo(node) {
     let offset = 500;
-    svg.transition(500).call(zoom.transform, d3.zoomIdentity.translate(offset-node.x, offset-node.y));
-    
+    svg.transition(500).call(zoom.transform, d3.zoomIdentity.translate(offset - node.x, offset - node.y));
+
 }
