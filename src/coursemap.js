@@ -1,5 +1,7 @@
 import "d3-force";
 import * as d3 from "d3";
+
+import * as data from "data";
 import * as simulation from "simulation"
 import * as search from "search";
 
@@ -32,7 +34,7 @@ var node;
 
 function subjectColors(subject) {
     if (coloursUsed[subject]) return coloursUsed[subject];
-    let faculty = simulation.subjects.find((x) => (x.subject == subject));
+    let faculty = data.subjects.find((x) => (x.subject == subject));
     if (!facultyIndices[faculty]) facultyIndices[faculty] = 0;
     let index = facultyIndices[faculty];
     let color = "#E4B429";
@@ -43,8 +45,8 @@ function subjectColors(subject) {
 }
 
 export function init() {
-    let courses = simulation.courses;
-    let courseLinks = simulation.courseLinks;
+    let courses = data.courses;
+    let courseLinks = data.courseLinks;
     zoom = d3.zoom().on("zoom", function () {
         map.attr("transform", d3.event.transform)
     });
@@ -68,7 +70,6 @@ export function init() {
     link = map.append("g").selectAll(".link")
         .data(courseLinks)
         .enter().append("line").attr("marker-end", "url(#marker)")
-    console.log(link);
 
     node = map.append("g").selectAll(".node")
         .data(courses)
@@ -94,15 +95,14 @@ export function init() {
 
     simulation.simulation.on("tick", ticked);
 
-
     $("#center-button").click(() => {
         svg.transition(500).call(zoom.transform, d3.zoomIdentity)
     });
 
 }
 export function update(highlightFilter) {
-    let courses = simulation.courses;
-    let courseLinks = simulation.courseLinks;
+    let courses = data.courses;
+    let courseLinks = data.courseLinks;
     node = node.data(courses, function (d) {
         return d.id;
     });

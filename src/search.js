@@ -1,5 +1,6 @@
 import $ from "jquery";
 import * as simulation from "simulation";
+import * as data from "data";
 import * as courseMap from "coursemap";
 
 var search = {
@@ -72,13 +73,13 @@ function searchGraduate() {
 }
 
 function updateData() {
+    data.filter(getFilter)
     simulation.updateData(getFilter);
     courseMap.update(getHighlight);
     $("#search-results").empty();
     if (search.searching) {
-        let searchResults = simulation.courses.filter(getHighlight);
+        let searchResults = data.courses.filter(getHighlight);
         $.each(searchResults.slice(0, 3), (i, e) => {
-            console.log(e.subject)
             $("#search-results")
                 .append(`<a href="#" class="list-group-item">${e.subject} ${e.catalog_number}</a>`);
             $("#search-results>a").last().click(function () {
@@ -92,7 +93,6 @@ function updateData() {
             $("#search-results>a").last().click(function () {
                 $("#search-results>a").last().remove()
                 $.each(searchResults.slice(3), (i, e) => {
-                    console.log(e.subject)
                     $("#search-results")
                         .append(`<a href="#" class="list-group-item">${e.subject} ${e.catalog_number}</a>`);
                     $("#search-results>a").last().click(function () {

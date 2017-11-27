@@ -5,6 +5,7 @@ import "bootstrap";
 import "styles.scss";
 import $ from "jquery";
 
+import * as data from "data";
 import * as search from "search";
 import * as courseMap from "coursemap";
 import * as simulation from "simulation";
@@ -40,7 +41,7 @@ $(document).ready(function () {
     //https://stackoverflow.com/a/26233793
 });
 
-simulation.getData().then(ready, console.error)
+data.getData().then(ready, console.error)
 
 function ready() {
     simulation.init($("#map").width(), $("#map").height());
