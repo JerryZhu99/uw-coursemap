@@ -40,7 +40,10 @@ export function getHighlight(e) {
                 e.subject,
                 e.catalog_number,
                 e.title,
-                e.description
+                e.description,
+                e.prerequisites,
+                e.corequisites,
+                e.antirequisites,
             ].some(v => String(v).toUpperCase().includes(s.trim().toUpperCase())))
         )) {
         return false;
