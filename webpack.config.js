@@ -18,21 +18,26 @@ module.exports = {
                 fallback: "style-loader",
                 use: "css-loader"
             })
-        },{
+        }, {
             test: /\.scss$/,
             use: ExtractTextPlugin.extract({
                 fallback: "style-loader",
                 use: [{
-                    loader: "css-loader", options: {
+                    loader: "css-loader",
+                    options: {
                         sourceMap: true
                     }
                 }, {
-                    loader: "sass-loader", options: {
+                    loader: "sass-loader",
+                    options: {
                         sourceMap: true
                     }
                 }]
             })
-        }],
+        }, {
+            test: /\.hbs$/,
+            loader: 'handlebars-loader'
+        }, ],
     },
     resolve: {
         modules: [
@@ -42,7 +47,7 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: "./src/index.html"
+            template: 'src/index.hbs'
         }),
         new ExtractTextPlugin("styles.css"),
         new webpack.ProvidePlugin({
