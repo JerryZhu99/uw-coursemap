@@ -47,9 +47,11 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'src/index.hbs'
+            baseurl: "/uw-coursemap/",            
+            template: 'src/index.hbs',
         }),
         new HtmlWebpackPlugin({
+            baseurl: "/uw-coursemap/",
             template: 'src/about.hbs',
             filename: 'about/index.html',
             excludeChunks: ["map"]

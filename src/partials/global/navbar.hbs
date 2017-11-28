@@ -1,14 +1,14 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <span class="navbar-brand mb-0 h1">UW Course Map</span>
+    <a class="navbar-brand mb-0 h1" href="{{htmlWebpackPlugin.options.baseurl}}">UW Course Map</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbar">
         <div class="navbar-nav">
-            <a class="nav-item nav-link {{map}}" href="/">Map</a>
-            <a class="nav-item nav-link {{courses}}" href="/courses">Courses</a>
-            <a class="nav-item nav-link {{plan}}" href="/plan">Plan</a>
-            <a class="nav-item nav-link {{about}}" href="/about">About</a>
+            <a class="nav-item nav-link {{map}}" href="{{htmlWebpackPlugin.options.baseurl}}">Map</a>
+            <a class="nav-item nav-link {{courses}}" href="{{htmlWebpackPlugin.options.baseurl}}courses">Courses</a>
+            <a class="nav-item nav-link {{plan}}" href="{{htmlWebpackPlugin.options.baseurl}}plan">Plan</a>
+            <a class="nav-item nav-link {{about}}" href="{{htmlWebpackPlugin.options.baseurl}}about">About</a>
         </div>
     </div>
 </nav>
