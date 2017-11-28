@@ -5,9 +5,9 @@ const path = require('path');
 
 
 module.exports = {
-    entry: './src/app.js',
+    entry: {map:'./src/map.js', all:"./src/app.js"},
     output: {
-        filename: 'bundle.js',
+        filename: 'bundle-[name].js',
         path: __dirname + '/build',
         library: "app"
     },
@@ -48,6 +48,11 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: 'src/index.hbs'
+        }),
+        new HtmlWebpackPlugin({
+            template: 'src/about.hbs',
+            filename: 'about/index.html',
+            excludeChunks: ["map"]
         }),
         new ExtractTextPlugin("styles.css"),
         new webpack.ProvidePlugin({
