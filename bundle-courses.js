@@ -58,7 +58,7 @@ var app =
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
+/******/ 	__webpack_require__.p = "/uw-coursemap/";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 474);
@@ -66,7 +66,294 @@ var app =
 /************************************************************************/
 /******/ ({
 
-/***/ 10:
+/***/ 18:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return courseData; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return links; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return subjects; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return courses; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return courseLinks; });
+/* harmony export (immutable) */ __webpack_exports__["d"] = filter;
+/* harmony export (immutable) */ __webpack_exports__["e"] = getData;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
+
+
+/**
+ * @typedef {Object} Course
+ * @property {string} subject
+ * @property {?string} catalog_number
+ * @property {?string} title
+ * @property {?string} prerequisites
+ * @property {?string[]} prerequisites_parsed
+ * @property {string} course_id
+ * @property {number} units
+ * @property {?string} description
+ * @property {?string} antirequisites
+ * @property {?string} corequisites
+ * @property {boolean} needs_department_consent
+ * @property {boolean} needs_instructor_consent
+ * @property {string} url
+ * @property {string} academic_level
+ */
+
+/**
+ * All courses from data.
+ * @type {Course[]}
+ */
+var courseData = [];
+/**
+ * All prereq links from data.
+ * @type {{source: string, target: string, course: Course, prereq: Course}}
+ */
+var links = [];
+var subjects = [];
+
+/**
+ * Currently filtered courses.
+ * @type {Course[]}
+ */
+var courses;
+
+/**
+ * Currently filtered prereq links.
+ * @type {{source: string, target: string, course: Course, prereq: Course}}
+ */
+var courseLinks;
+
+/**
+ * Filters the courses and links by the given filter.
+ * @param {function} courseFilter - the filter to apply.
+ */
+function filter(courseFilter) {
+    courses = courseData.filter(courseFilter);
+    courseLinks = links
+        .filter((x) => courses.includes(x.prereq) && courses.includes(x.course))
+}
+/**
+ * Requests the prereqs, details, and subjects.
+ * @returns {Promise} Promise object represeting prereqs, course, and subject data.
+ */
+function getData() {
+    let dataRequests = [];
+    dataRequests.push(__WEBPACK_IMPORTED_MODULE_0_jquery___default.a.getJSON("data/prereqs.json").done(function (data) {
+        links = data;
+        console.log(`retrieved prereq data: (${links.length})`);
+    }).fail(console.error));
+    dataRequests.push(__WEBPACK_IMPORTED_MODULE_0_jquery___default.a.getJSON("data/details.json").done(function (data) {
+        courseData = data;
+        console.log(`retrieved course data: (${courseData.length})`);
+    }).fail(console.error));
+    dataRequests.push(__WEBPACK_IMPORTED_MODULE_0_jquery___default.a.getJSON("data/subjects.json").done(function (data) {
+        subjects = data;
+        console.log(`retrieved subject data: (${subjects.length})`);
+    }).fail(console.error));
+    return Promise.all(dataRequests);
+}
+
+/***/ }),
+
+/***/ 474:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_data__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_courses_coursesearch__ = __webpack_require__(475);
+
+
+
+
+
+__WEBPACK_IMPORTED_MODULE_1_data__["e" /* getData */]().then(function(){
+    __WEBPACK_IMPORTED_MODULE_2_courses_coursesearch__["a" /* init */]();    
+})
+
+
+/***/ }),
+
+/***/ 475:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {/* harmony export (immutable) */ __webpack_exports__["a"] = init;
+/* unused harmony export getFilter */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_data__ = __webpack_require__(18);
+
+
+/**
+ * @namespace
+ * @property {string} general
+ * @property {boolean} searching
+ * @property {string} subjects
+ * @property {boolean}  undergrad
+ * @property {boolean} graduate
+ */
+var search = {
+    general: "",
+    subjects: "",
+    number: "",
+    undergrad: true,
+    graduate: false,
+}
+
+var page = 0;
+var itemsShown = 10;
+
+/**
+ * Initializes the search with event handlers.
+ */
+function init() {
+    $("#search").change(updateData);
+    $("#subjectsearch").change(updateData);
+    $("#numbersearch").change(updateData);
+    $("#undergradsearch").change(updateData);
+    $("#graduatesearch").change(updateData);
+    $(".pagination").delegate("a", "click", function(){
+        page = $(this).data("page");
+        updateData();
+    })
+    updateData();
+}
+
+/**
+ * Returns whether the course is included in the selection.
+ * @param {Object} e The course to test.
+ * @returns {boolean} whether the course is found in the selection.
+ */
+function getFilter(e) {
+    if (search.subjects && !search.subjects.split(",").some((x) => (x.trim().toUpperCase() == e.subject))) {
+        return false;
+    }
+    if (search.number && !search.number.split(",").some((x) => (x.trim().toUpperCase() == e.catalog_number))) {
+        return false;
+    }
+    if (!search.undergrad && e.academic_level == "undergraduate") {
+        return false;
+    }
+    if (!search.graduate && e.academic_level == "graduate") {
+        return false;
+    }
+    if (search.general && !search.general.split(",").some(
+            s => ([
+                e.subject + " " + e.catalog_number,
+                e.subject,
+                e.catalog_number,
+                e.title,
+                e.description,
+                e.prerequisites,
+                e.corequisites,
+                e.antirequisites,
+            ].some(v => String(v).toUpperCase().includes(s.trim().toUpperCase())))
+        )) {
+        return false;
+    }
+    return true;
+
+}
+
+function updateData() {
+    search.general = $("#search").val();
+    search.subjects = $("#subjectsearch").val();
+    search.number = $("#numbersearch").val();
+    search.undergrad = $("#undergradsearch").is(":checked");
+    search.graduate = $("#graduatesearch").is(":checked");
+
+    __WEBPACK_IMPORTED_MODULE_0_data__["d" /* filter */](getFilter);
+    $("#results").empty();
+    for (let e of __WEBPACK_IMPORTED_MODULE_0_data__["c" /* courses */].slice(page * itemsShown, (page + 1) * itemsShown)) {
+
+        $("#results").append($("#course-template").html())
+        let elem = $("#results").children().last();
+
+        elem.children(".course-name").text(e.title ? e.title : e.description);
+        elem.children(".course-code").text(`${e.subject} ${e.catalog_number}${e.crosslistings?" | "+e.crosslistings:""}`);
+        elem.children(".course-description").text(e.description);
+        elem.children(".course-prereqs").text(e.prerequisites ? `Prereqs: ${e.prerequisites}` : e.isSubject ? "" : "No prerequisites found.");
+        elem.children(".course-coreqs").text(e.corequisites ? `Coreqs: ${e.corequisites}` : "");
+        elem.children(".course-antireqs").text(e.antirequisites ? `Antireqs: ${e.antirequisites}` : "");
+        elem.children(".course-dept-consent").text(e.needs_department_consent ? "Department consent required." : "");
+        elem.children(".course-instr-consent").text(e.needs_instructor_consent ? "Instructor consent required." : "");
+
+        e.url ? $(".course-link").show() : $(".course-link").hide();
+        elem.children(".course-link").attr("href", e.url);
+    }
+    updatePagination();
+
+}
+
+function updatePagination() {
+    let length = Math.ceil(__WEBPACK_IMPORTED_MODULE_0_data__["c" /* courses */].length / 10);
+    let pagination = $(".pagination");
+    pagination.empty()
+    if (page == 0) {
+        pagination.append(`
+        <li class="page-item disabled">
+            <span class="page-link">First</span>
+        </li>
+        `)
+        pagination.append(`
+        <li class="page-item disabled">
+            <span class="page-link">Previous</span>
+        </li>
+        `)
+    } else {
+        pagination.append(`
+        <li class="page-item">
+            <a href="#${1}" data-page="${0}" class="page-link">First</a>
+        </li>
+        `)
+        pagination.append(`
+        <li class="page-item">
+            <a href="#${page}" data-page="${page - 1}" class="page-link">Previous</a>
+        </li>
+        `)
+    }
+    let min = Math.max(0, page - 2);
+    let max = Math.min(length, page + 3);
+    for (let i = min; i < max; i++){
+        pagination.append(`
+        <li class="page-item ${i == page ? "active" : ""}">
+            <a href="#${i+1}" data-page="${i}" class="page-link">${i+1}</a>
+        </li>
+        `)
+
+    }
+    if (page == length - 1) {
+        pagination.append(`
+        <li class="page-item disabled">
+            <span class="page-link">Next</span>
+        </li>
+        `)
+        pagination.append(`
+        <li class="page-item disabled">
+            <span class="page-link">Last</span>
+        </li>
+        `)
+    } else {
+        pagination.append(`
+        <li class="page-item">
+            <a href="#${page + 2}" data-page="${page + 1}" class="page-link">Next</a>
+        </li>
+        `)
+
+        pagination.append(`
+        <li class="page-item">
+            <a href="#${length}" data-page="${length - 1}" class="page-link">Last</a>
+        </li>
+        `)
+
+    }
+}
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(7)))
+
+/***/ }),
+
+/***/ 7:
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10323,65 +10610,6 @@ if ( !noGlobal ) {
 
 return jQuery;
 } );
-
-
-/***/ }),
-
-/***/ 22:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return courseData; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return links; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return subjects; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return courses; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return courseLinks; });
-/* harmony export (immutable) */ __webpack_exports__["d"] = filter;
-/* harmony export (immutable) */ __webpack_exports__["e"] = getData;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-
-
-
-var courseData = [];
-var links = [];
-var subjects = [];
-
-var courses;
-var courseLinks;
-
-function filter(courseFilter) {
-    courses = courseData.filter(courseFilter);
-    courseLinks = links
-        .filter((x) => courses.includes(x.prereq) && courses.includes(x.course))
-}
-
-function getData() {
-    let dataRequests = [];
-    dataRequests.push(__WEBPACK_IMPORTED_MODULE_0_jquery___default.a.getJSON("data/prereqs.json").done(function (data) {
-        links = data;
-        console.log(`retrieved prereq data: (${links.length})`);
-    }).fail(console.error));
-    dataRequests.push(__WEBPACK_IMPORTED_MODULE_0_jquery___default.a.getJSON("data/details.json").done(function (data) {
-        courseData = data;
-        console.log(`retrieved course data: (${courseData.length})`);
-    }).fail(console.error));
-    dataRequests.push(__WEBPACK_IMPORTED_MODULE_0_jquery___default.a.getJSON("data/subjects.json").done(function (data) {
-        subjects = data;
-        console.log(`retrieved subject data: (${subjects.length})`);
-    }).fail(console.error));
-    return Promise.all(dataRequests);
-}
-
-/***/ }),
-
-/***/ 474:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_data__ = __webpack_require__(22);
-
 
 
 /***/ })

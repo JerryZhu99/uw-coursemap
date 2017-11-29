@@ -6341,11 +6341,6 @@ g > g {
   g > g:hover > text {
     fill: #343a40; }
 
-body {
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden; }
-
 .container-fluid,
 .row,
 .col {
