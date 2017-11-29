@@ -130,7 +130,7 @@ var courseLinks;
 function filter(courseFilter) {
     courses = courseData.filter(courseFilter);
     courseLinks = links
-        .filter((x) => courses.includes(x.prereq) && courses.includes(x.course))
+        .filter((x) => courses.some(e=>e.id == x.prereq) && courses.some(e=>e.id == x.course))
 }
 /**
  * Requests the prereqs, details, and subjects.
