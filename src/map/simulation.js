@@ -26,16 +26,14 @@ export function init(width, height) {
     })
     data.links.forEach(function (e) {
         e.source = e.prereq;
-        e.prereq = data.courseData.find(x => e.prereq == x.id)
         e.target = e.course;
-        e.course = data.courseData.find(x => e.course == x.id)
     })
     data.filter(search.getFilter);
 
     simulation = d3.forceSimulation(data.courses)
         .force("charge", d3.forceManyBody().strength(-3000))
         .force("center", d3.forceCenter(width / 2, height / 2))
-        .force("links", d3.forceLink(data.courseLinks).id(x => x.id).distance(300))
+        .force("links", d3.forceLink().id(x => x.id).links(data.courseLinks).distance(300))
 }
 
 /**

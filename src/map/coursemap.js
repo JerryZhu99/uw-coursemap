@@ -143,7 +143,7 @@ export function update(highlightFilter) {
     link = link.enter().append("line").attr("marker-end", "url(#marker)").merge(link);
 
     node.attr("opacity", d => (highlightFilter(d) ? 1 : 0.25))
-    link.attr("opacity", d => ((highlightFilter(d.course) || highlightFilter(d.prereq)) ? 1 : 0.25))
+    link.attr("opacity", d => ((highlightFilter(d.source) || highlightFilter(d.target)) ? 1 : 0.25))
 }
 
 /**
@@ -151,24 +151,24 @@ export function update(highlightFilter) {
  */
 export function ticked() {
     link.attr("x1", function (d) {
-            let dist = Math.hypot(d.course.x - d.prereq.x, d.course.y - d.prereq.y);
-            let dx = (d.course.x - d.prereq.x) / dist;
-            return d.prereq.x + dx * (RADIUS + BORDER_WIDTH);
+            let dist = Math.hypot(d.target.x - d.source.x, d.target.y - d.source.y);
+            let dx = (d.target.x - d.source.x) / dist;
+            return d.source.x + dx * (RADIUS + BORDER_WIDTH);
         })
         .attr("y1", function (d) {
-            let dist = Math.hypot(d.course.x - d.prereq.x, d.course.y - d.prereq.y);
-            let dy = (d.course.y - d.prereq.y) / dist;
-            return d.prereq.y + dy * (RADIUS + BORDER_WIDTH);
+            let dist = Math.hypot(d.target.x - d.source.x, d.target.y - d.source.y);
+            let dy = (d.target.y - d.source.y) / dist;
+            return d.source.y + dy * (RADIUS + BORDER_WIDTH);
         })
         .attr("x2", function (d) {
-            let dist = Math.hypot(d.course.x - d.prereq.x, d.course.y - d.prereq.y);
-            let dx = (d.course.x - d.prereq.x) / dist;
-            return d.course.x - dx * (RADIUS + BORDER_WIDTH);
+            let dist = Math.hypot(d.target.x - d.source.x, d.target.y - d.source.y);
+            let dx = (d.target.x - d.source.x) / dist;
+            return d.target.x - dx * (RADIUS + BORDER_WIDTH);
         })
         .attr("y2", function (d) {
-            let dist = Math.hypot(d.course.x - d.prereq.x, d.course.y - d.prereq.y);
-            let dy = (d.course.y - d.prereq.y) / dist;
-            return d.course.y - dy * (RADIUS + BORDER_WIDTH);
+            let dist = Math.hypot(d.target.x - d.source.x, d.target.y - d.source.y);
+            let dy = (d.target.y - d.source.y) / dist;
+            return d.target.y - dy * (RADIUS + BORDER_WIDTH);
         });
     node.attr("transform", (d) => (`translate(${d.x},${d.y})`))
 }
