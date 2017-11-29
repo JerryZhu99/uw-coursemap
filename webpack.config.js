@@ -74,6 +74,10 @@ module.exports = {
         inline: true,
         contentBase: "build/",
         publicPath: "http://localhost:8080/uw-coursemap/",
+        /*
+        * Workaround from 
+        * https://github.com/webpack/webpack-dev-server/issues/954
+        */
         proxy: {
             '/uw-coursemap/data': {
               target: 'http://localhost:8080/',

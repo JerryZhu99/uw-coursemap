@@ -4,8 +4,16 @@ import * as d3 from "d3";
 import * as search from "search";
 import * as data from "data";
 
+/**
+ * @type {d3.Simulation.<d3.SimulationNodeDatum, undefined>}
+ */
 export var simulation;
 
+/**
+ * Initializes the simulation centered in the given width and height.
+ * @param {number} width 
+ * @param {number} height 
+ */
 export function init(width, height) {
     for (let e of data.subjects) {
         e.catalog_number = "";
@@ -30,8 +38,10 @@ export function init(width, height) {
         .force("links", d3.forceLink(data.courseLinks).id(x => x.id).distance(300))
 }
 
-export function updateData(filter) {
-
+/**
+ * Updates the simulation with new data.
+ */
+export function updateData() {
     simulation.nodes(data.courses);
     simulation.force("charge").initialize(data.courses);
     simulation.force("center").initialize(data.courses);

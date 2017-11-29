@@ -31,7 +31,11 @@ var zoom;
 var link;
 var node;
 
-
+/**
+ * Returns the colour of the subject at UW.
+ * @param {string} subject
+ * @returns {string} The colour of the subject.
+ */
 function subjectColors(subject) {
     if (coloursUsed[subject]) return coloursUsed[subject];
     let faculty = data.subjects.find((x) => (x.subject == subject));
@@ -44,6 +48,9 @@ function subjectColors(subject) {
     return color;
 }
 
+/**
+ * Initializes the course map.
+ */
 export function init() {
     let courses = data.courses;
     let courseLinks = data.courseLinks;
@@ -100,6 +107,10 @@ export function init() {
     });
 
 }
+/**
+ * Updates the map, highlighting based on the given filter.
+ * @param {function} highlightFilter 
+ */
 export function update(highlightFilter) {
     let courses = data.courses;
     let courseLinks = data.courseLinks;
@@ -134,6 +145,10 @@ export function update(highlightFilter) {
     node.attr("opacity", d => (highlightFilter(d) ? 1 : 0.25))
     link.attr("opacity", d => ((highlightFilter(d.course) || highlightFilter(d.prereq)) ? 1 : 0.25))
 }
+
+/**
+ * Updates the map with new locations of elements.
+ */
 export function ticked() {
     link.attr("x1", function (d) {
             let dist = Math.hypot(d.course.x - d.prereq.x, d.course.y - d.prereq.y);
@@ -158,6 +173,10 @@ export function ticked() {
     node.attr("transform", (d) => (`translate(${d.x},${d.y})`))
 }
 
+/**
+ * Zooms the map to the given course
+ * @param {Object} node - The course to zoom to.
+ */
 export function zoomTo(node) {
     let offset = 500;
     svg.transition(500).call(zoom.transform, d3.zoomIdentity.translate(offset - node.x, offset - node.y));
