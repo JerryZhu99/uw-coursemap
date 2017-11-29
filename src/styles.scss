@@ -5,11 +5,7 @@ $theme-colors: ( "primary": #019faa,
 );
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "map.scss";
-body {
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-}
+
 
 .container-fluid,
 .row,

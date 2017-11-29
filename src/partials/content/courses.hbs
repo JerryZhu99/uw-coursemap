@@ -1,9 +1,58 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <div class="h1 display-3">
+            <div class="h1">
                 Courses
             </div>
+            <form onsubmit="return false">
+                <div class="form-group">
+                    <input class="form-control" id="search" type="text" placeholder="Search...">
+                </div>
+            </form>
+
+            <form onsubmit="return false" class="form-inline">
+                <label for="subjectsearch" class="mr-sm-2">Subject:</label>
+                <input class="form-control mr-sm-2" id="subjectsearch" type="text">
+                <label for="numbersearch" class="mr-sm-2">Number:</label>
+                <input class="form-control mr-sm-2" id="numbersearch" type="text">
+                <div class="form-check mr-sm-2">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" id="undergradsearch" checked> Show Undergrad
+                    </label>
+                </div>
+                <div class="form-check mr-sm-2">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" id="graduatesearch"> Show Graduate
+                    </label>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <ul class="pagination">
+
+            </ul>
+            <div id="results">
+
+            </div>
+            <script type="text/template" id="course-template">
+                <div class="course-listing">
+                    <h2 class="course-name"></h2>
+                    <p class="course-code text-primary font-weight-bold"></p>
+                    <p class="course-description"></p>
+                    <p class="course-prereqs"></p>
+                    <p class="course-coreqs"></p>
+                    <p class="course-antireqs"></p>
+                    <p class="course-dept-consent font-italic"></p>
+                    <p class="course-instr-consent font-italic"></p>
+                    <a class="course-link">Calendar Link</a>
+                    <hr>
+                </div>
+            </script>
+            <ul class="pagination">
+                
+            </ul>
         </div>
     </div>
 </div>
