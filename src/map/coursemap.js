@@ -2,8 +2,8 @@ import "d3-force";
 import * as d3 from "d3";
 
 import * as data from "data";
-import * as simulation from "simulation"
-import * as search from "search";
+import * as simulation from "map/simulation"
+import * as search from "map/mapsearch";
 
 const RADIUS = 35;
 const BORDER_WIDTH = 0.5;

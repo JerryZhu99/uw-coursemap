@@ -1,7 +1,7 @@
 import $ from "jquery";
-import * as simulation from "simulation";
+import * as simulation from "map/simulation";
 import * as data from "data";
-import * as courseMap from "coursemap";
+import * as courseMap from "map/coursemap";
 
 /**
  * @namespace

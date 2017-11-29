@@ -1,7 +1,7 @@
 import "d3-force";
 import * as d3 from "d3";
 
-import * as search from "search";
+import * as search from "map/mapsearch";
 import * as data from "data";
 
 /**

@@ -3,9 +3,9 @@ import * as d3 from "d3";
 import $ from "jquery";
 
 import * as data from "data";
-import * as search from "search";
-import * as courseMap from "coursemap";
-import * as simulation from "simulation";
+import * as search from "map/mapsearch";
+import * as courseMap from "map/coursemap";
+import * as simulation from "map/simulation";
 
 $(document).ready(function () {
     $("#main-panel").show();
