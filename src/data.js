@@ -57,15 +57,15 @@ export function filter(courseFilter) {
  */
 export function getData() {
     let dataRequests = [];
-    dataRequests.push($.getJSON("data/prereqs.json").done(function (data) {
+    dataRequests.push($.getJSON("/uw-coursemap/data/prereqs.json").done(function (data) {
         links = data;
         console.log(`retrieved prereq data: (${links.length})`);
     }).fail(console.error));
-    dataRequests.push($.getJSON("data/details.json").done(function (data) {
+    dataRequests.push($.getJSON("/uw-coursemap/data/details.json").done(function (data) {
         courseData = data;
         console.log(`retrieved course data: (${courseData.length})`);
     }).fail(console.error));
-    dataRequests.push($.getJSON("data/subjects.json").done(function (data) {
+    dataRequests.push($.getJSON("/uw-coursemap/data/subjects.json").done(function (data) {
         subjects = data;
         console.log(`retrieved subject data: (${subjects.length})`);
     }).fail(console.error));
