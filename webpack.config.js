@@ -3,9 +3,8 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const webpack = require("webpack");
 const path = require('path');
 
-
 module.exports = {
-    entry: {map:'./src/map.js', all:"./src/app.js"},
+    entry: {map:'./src/map.js', all:"./src/app.js", courses:"./src/courses.js"},
     output: {
         filename: 'bundle-[name].js',
         path: __dirname + '/build',
@@ -54,7 +53,13 @@ module.exports = {
             baseurl: "/uw-coursemap/",
             template: 'src/about.hbs',
             filename: 'about/index.html',
-            excludeChunks: ["map"]
+            chunks: ["all"]
+        }),
+        new HtmlWebpackPlugin({
+            baseurl: "/uw-coursemap/",
+            template: 'src/courses.hbs',
+            filename: 'courses/index.html',
+            chunks: ["all", "courses"]
         }),
         new ExtractTextPlugin("styles.css"),
         new webpack.ProvidePlugin({
@@ -64,5 +69,16 @@ module.exports = {
             Popper: ['popper.js', 'default'],
         })
     ],
-    devtool: "source-map"
+    devtool: "source-map",
+    devServer: {
+        inline: true,
+        contentBase: "build/",
+        publicPath: "http://localhost:8080/uw-coursemap/",
+        proxy: {
+            '/uw-coursemap/data': {
+              target: 'http://localhost:8080/',
+              pathRewrite: { '^/uw-coursemap/data': '/data' },
+            },
+        }
+    }
 }

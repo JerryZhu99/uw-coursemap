@@ -8,7 +8,7 @@
     "build": "webpack",
     "data": "node data.js",
     "deploy": "npm run build && gh-pages -d build",
-    "start": "webpack-dev-server --content-base build/"
+    "start": "webpack-dev-server"
   },
   "author": "Jerry Zhu",
   "license": "MIT",
