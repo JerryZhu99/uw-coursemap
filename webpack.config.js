@@ -8,7 +8,8 @@ module.exports = {
     output: {
         filename: 'bundle-[name].js',
         path: __dirname + '/build',
-        library: "app"
+        library: "app",
+        publicPath: "/uw-coursemap/"
     },
     module: {
         rules: [{
@@ -48,6 +49,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             baseurl: "/uw-coursemap/",            
             template: 'src/index.hbs',
+            chunks: ["all", "map"]
         }),
         new HtmlWebpackPlugin({
             baseurl: "/uw-coursemap/",
@@ -71,7 +73,6 @@ module.exports = {
     ],
     devtool: "source-map",
     devServer: {
-        inline: true,
         contentBase: "build/",
         publicPath: "http://localhost:8080/uw-coursemap/",
         /*
