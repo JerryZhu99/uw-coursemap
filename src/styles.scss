@@ -6,6 +6,10 @@ $theme-colors: ( "primary": #019faa,
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "map.scss";
 
+.container{
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
 
 .container-fluid,
 .row,
