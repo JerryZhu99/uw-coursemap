@@ -1,5 +1,3 @@
-
-
 /**
  * @type {String[]}
  */
@@ -15,13 +13,14 @@ export var terms = [
     "4B",
 ]
 
-if(!localStorage.coursePlan)localStorage.coursePlan = "{}";
+if (!localStorage.coursePlan) localStorage.coursePlan = "{}";
 
 /**
  * @type {Object.<string, string[]>}
  */
-export var plan =  JSON.parse(localStorage.coursePlan);
-function savePlan(){
+export var plan = JSON.parse(localStorage.coursePlan);
+
+function savePlan() {
     localStorage.coursePlan = JSON.stringify(plan);
 }
 
@@ -30,10 +29,10 @@ function savePlan(){
  * @param {String} term 
  * @param {String} courseCode 
  */
-export function add(term, courseCode){
-    if(!plan[term]){
+export function add(term, courseCode) {
+    if (!plan[term]) {
         plan[term] = [courseCode];
-    }else{
+    } else {
         plan[term].push(courseCode)
         plan[term].sort();
     }
@@ -44,28 +43,28 @@ export function add(term, courseCode){
  * 
  * @param {String} courseCode 
  */
-export function remove(courseCode){
-    for(let term of terms){
-        if(!plan[term]){
+export function remove(courseCode) {
+    for (let term of terms) {
+        if (!plan[term]) {
             plan[term] = [];
-        }else{
+        } else {
             let index = plan[term].indexOf(courseCode);
-            if(index > -1) plan[term].splice(index ,1);
+            if (index > -1) plan[term].splice(index, 1);
         }
     }
-    savePlan();    
+    savePlan();
 }
 
 /**
  * 
  * @param {String} courseCode 
  */
-export function get(courseCode){
-    for(let term of terms){
-        if(!plan[term]){
+export function get(courseCode) {
+    for (let term of terms) {
+        if (!plan[term]) {
             plan[term] = [];
-        }else{
-            if(plan[term].includes(courseCode))return term;
+        } else {
+            if (plan[term].includes(courseCode)) return term;
         }
     }
     return "";

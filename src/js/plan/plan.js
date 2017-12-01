@@ -1,6 +1,6 @@
 import $ from "jquery";
 
-import * as plan from "utils/plan";
+import * as plan from "plan";
 
 $(document).ready(function(){
     console.log(plan)

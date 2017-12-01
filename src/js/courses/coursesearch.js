@@ -1,6 +1,5 @@
 import * as data from "data";
-
-import * as plan from "utils/plan";
+import * as plan from "plan";
 
 /**
  * @namespace
@@ -30,7 +29,7 @@ export function init() {
     $("#numbersearch").change(updateData);
     $("#undergradsearch").change(updateData);
     $("#graduatesearch").change(updateData);
-    $(".pagination").delegate("a", "click", function(){
+    $(".pagination").delegate("a", "click", function () {
         page = $(this).data("page");
         updateData();
     })
@@ -86,13 +85,13 @@ function updateData() {
 
         $("#results").append($("#course-template").html())
         let elem = $("#results").children().last();
-        let courseCode = e.subject+" "+e.catalog_number;
-        elem.children(".course-plan").change(function(){
+        let courseCode = e.subject + " " + e.catalog_number;
+        elem.children(".course-plan").change(function () {
             let term = elem.children(".course-plan").val();
-            if(term){
+            if (term) {
                 plan.remove(courseCode);
                 plan.add(term, courseCode)
-            }else{
+            } else {
                 plan.remove(courseCode);
             }
         })
@@ -142,7 +141,7 @@ function updatePagination() {
     }
     let min = Math.max(0, page - 2);
     let max = Math.min(length, page + 3);
-    for (let i = min; i < max; i++){
+    for (let i = min; i < max; i++) {
         pagination.append(`
         <li class="page-item ${i == page ? "active" : ""}">
             <a href="#${i+1}" data-page="${i}" class="page-link">${i+1}</a>

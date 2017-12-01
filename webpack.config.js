@@ -4,7 +4,7 @@ const webpack = require("webpack");
 const path = require('path');
 
 module.exports = {
-    entry: {map:'map.js', all:"app.js", courses:"courses.js", plan:"plan.js"},
+    entry: {map:'map/map.js', all:"app.js", courses:"courses/courses.js", plan:"plan/plan.js"},
     output: {
         filename: 'bundle-[name].js',
         path: __dirname + '/build',
@@ -42,6 +42,7 @@ module.exports = {
     resolve: {
         modules: [
             "src",
+            "src/js",
             "node_modules"
         ]
     },
