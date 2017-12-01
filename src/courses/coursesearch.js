@@ -1,5 +1,7 @@
 import * as data from "data";
 
+import * as plan from "utils/plan";
+
 /**
  * @namespace
  * @property {string} general
@@ -84,7 +86,17 @@ function updateData() {
 
         $("#results").append($("#course-template").html())
         let elem = $("#results").children().last();
-
+        let courseCode = e.subject+" "+e.catalog_number;
+        elem.children(".course-plan").change(function(){
+            let term = elem.children(".course-plan").val();
+            if(term){
+                plan.remove(courseCode);
+                plan.add(term, courseCode)
+            }else{
+                plan.remove(courseCode);
+            }
+        })
+        elem.children(".course-plan").val(plan.get(courseCode))
         elem.children(".course-name").text(e.title ? e.title : e.description);
         elem.children(".course-code").text(`${e.subject} ${e.catalog_number}${e.crosslistings?" | "+e.crosslistings:""}`);
         elem.children(".course-description").text(e.description);

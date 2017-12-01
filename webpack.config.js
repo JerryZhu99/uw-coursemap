@@ -4,7 +4,7 @@ const webpack = require("webpack");
 const path = require('path');
 
 module.exports = {
-    entry: {map:'map.js', all:"app.js", courses:"courses.js"},
+    entry: {map:'map.js', all:"app.js", courses:"courses.js", plan:"plan.js"},
     output: {
         filename: 'bundle-[name].js',
         path: __dirname + '/build',
@@ -62,6 +62,12 @@ module.exports = {
             template: 'src/courses.hbs',
             filename: 'courses/index.html',
             chunks: ["all", "courses"]
+        }),
+        new HtmlWebpackPlugin({
+            baseurl: "/uw-coursemap/",
+            template: 'src/plan.hbs',
+            filename: 'plan/index.html',
+            chunks: ["all", "plan"]
         }),
         new ExtractTextPlugin("styles.css"),
         new webpack.ProvidePlugin({
