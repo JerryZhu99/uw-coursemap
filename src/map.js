@@ -38,7 +38,7 @@ $(document).ready(function () {
     //https://stackoverflow.com/a/26233793
 });
 
-data.getData().then(ready, console.error)
+data.getData("prereqs", "courses", "subjects").then(ready, console.error)
 
 function ready() {
     simulation.init($("#map").width(), $("#map").height());

@@ -47,25 +47,25 @@ export var courseLinks;
  * @param {function} courseFilter - the filter to apply.
  */
 export function filter(courseFilter) {
-    courses = courseData.filter(courseFilter);
-    courseLinks = links
+    if(courseData) courses = courseData.filter(courseFilter);
+    if(links) courseLinks = links
         .filter((x) => courses.some(e=>e.id == x.prereq) && courses.some(e=>e.id == x.course))
 }
 /**
  * Requests the prereqs, details, and subjects.
  * @returns {Promise} Promise object represeting prereqs, course, and subject data.
  */
-export function getData() {
+export function getData(...dataTypes) {
     let dataRequests = [];
-    dataRequests.push($.getJSON("/uw-coursemap/data/prereqs.json").done(function (data) {
+    if(dataTypes.includes("prereqs")) dataRequests.push($.getJSON("/uw-coursemap/data/prereqs.json").done(function (data) {
         links = data;
         console.log(`retrieved prereq data: (${links.length})`);
     }).fail(console.error));
-    dataRequests.push($.getJSON("/uw-coursemap/data/details.json").done(function (data) {
+    if(dataTypes.includes("courses")) dataRequests.push($.getJSON("/uw-coursemap/data/details.json").done(function (data) {
         courseData = data;
         console.log(`retrieved course data: (${courseData.length})`);
     }).fail(console.error));
-    dataRequests.push($.getJSON("/uw-coursemap/data/subjects.json").done(function (data) {
+    if(dataTypes.includes("subjects")) dataRequests.push($.getJSON("/uw-coursemap/data/subjects.json").done(function (data) {
         subjects = data;
         console.log(`retrieved subject data: (${subjects.length})`);
     }).fail(console.error));
