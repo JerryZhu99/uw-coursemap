@@ -11427,25 +11427,25 @@ var courseLinks;
  * @param {function} courseFilter - the filter to apply.
  */
 function filter(courseFilter) {
-    courses = courseData.filter(courseFilter);
-    courseLinks = links
+    if(courseData) courses = courseData.filter(courseFilter);
+    if(links) courseLinks = links
         .filter((x) => courses.some(e=>e.id == x.prereq) && courses.some(e=>e.id == x.course))
 }
 /**
  * Requests the prereqs, details, and subjects.
  * @returns {Promise} Promise object represeting prereqs, course, and subject data.
  */
-function getData() {
+function getData(...dataTypes) {
     let dataRequests = [];
-    dataRequests.push(__WEBPACK_IMPORTED_MODULE_0_jquery___default.a.getJSON("/uw-coursemap/data/prereqs.json").done(function (data) {
+    if(dataTypes.includes("prereqs")) dataRequests.push(__WEBPACK_IMPORTED_MODULE_0_jquery___default.a.getJSON("/uw-coursemap/data/prereqs.json").done(function (data) {
         links = data;
         console.log(`retrieved prereq data: (${links.length})`);
     }).fail(console.error));
-    dataRequests.push(__WEBPACK_IMPORTED_MODULE_0_jquery___default.a.getJSON("/uw-coursemap/data/details.json").done(function (data) {
+    if(dataTypes.includes("courses")) dataRequests.push(__WEBPACK_IMPORTED_MODULE_0_jquery___default.a.getJSON("/uw-coursemap/data/details.json").done(function (data) {
         courseData = data;
         console.log(`retrieved course data: (${courseData.length})`);
     }).fail(console.error));
-    dataRequests.push(__WEBPACK_IMPORTED_MODULE_0_jquery___default.a.getJSON("/uw-coursemap/data/subjects.json").done(function (data) {
+    if(dataTypes.includes("subjects")) dataRequests.push(__WEBPACK_IMPORTED_MODULE_0_jquery___default.a.getJSON("/uw-coursemap/data/subjects.json").done(function (data) {
         subjects = data;
         console.log(`retrieved subject data: (${subjects.length})`);
     }).fail(console.error));
@@ -20276,7 +20276,7 @@ __WEBPACK_IMPORTED_MODULE_2_jquery___default()(document).ready(function () {
     //https://stackoverflow.com/a/26233793
 });
 
-__WEBPACK_IMPORTED_MODULE_3_data__["e" /* getData */]().then(ready, console.error)
+__WEBPACK_IMPORTED_MODULE_3_data__["e" /* getData */]("prereqs", "courses", "subjects").then(ready, console.error)
 
 function ready() {
     __WEBPACK_IMPORTED_MODULE_6_map_simulation__["a" /* init */](__WEBPACK_IMPORTED_MODULE_2_jquery___default()("#map").width(), __WEBPACK_IMPORTED_MODULE_2_jquery___default()("#map").height());
