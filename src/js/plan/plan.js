@@ -14,4 +14,6 @@ $(document).ready(function(){
         $("#courses").append(row);
         
     }
+    if(plan.plan[plan.terms[0]].length == 0)
+        $("#plan-overview tr > :first-child").hide();
 });
