@@ -160,19 +160,14 @@ function getData(...dataTypes) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_data__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_courses_coursesearch__ = __webpack_require__(475);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_data__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_courses_coursesearch__ = __webpack_require__(475);
 
 
 
-
-
-__WEBPACK_IMPORTED_MODULE_1_data__["e" /* getData */]("courses").then(function(){
-    __WEBPACK_IMPORTED_MODULE_2_courses_coursesearch__["a" /* init */]();    
+__WEBPACK_IMPORTED_MODULE_0_data__["e" /* getData */]("courses").then(function () {
+    __WEBPACK_IMPORTED_MODULE_1_courses_coursesearch__["a" /* init */]();
 })
-
 
 /***/ }),
 
@@ -183,6 +178,8 @@ __WEBPACK_IMPORTED_MODULE_1_data__["e" /* getData */]("courses").then(function()
 /* WEBPACK VAR INJECTION */(function($) {/* harmony export (immutable) */ __webpack_exports__["a"] = init;
 /* unused harmony export getFilter */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_data__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_plan__ = __webpack_require__(96);
+
 
 
 /**
@@ -213,7 +210,7 @@ function init() {
     $("#numbersearch").change(updateData);
     $("#undergradsearch").change(updateData);
     $("#graduatesearch").change(updateData);
-    $(".pagination").delegate("a", "click", function(){
+    $(".pagination").delegate("a", "click", function () {
         page = $(this).data("page");
         updateData();
     })
@@ -269,7 +266,17 @@ function updateData() {
 
         $("#results").append($("#course-template").html())
         let elem = $("#results").children().last();
-
+        let courseCode = e.subject + " " + e.catalog_number;
+        elem.children(".course-plan").change(function () {
+            let term = elem.children(".course-plan").val();
+            if (term) {
+                __WEBPACK_IMPORTED_MODULE_1_plan__["remove"](courseCode);
+                __WEBPACK_IMPORTED_MODULE_1_plan__["add"](term, courseCode)
+            } else {
+                __WEBPACK_IMPORTED_MODULE_1_plan__["remove"](courseCode);
+            }
+        })
+        elem.children(".course-plan").val(__WEBPACK_IMPORTED_MODULE_1_plan__["get"](courseCode))
         elem.children(".course-name").text(e.title ? e.title : e.description);
         elem.children(".course-code").text(`${e.subject} ${e.catalog_number}${e.crosslistings?" | "+e.crosslistings:""}`);
         elem.children(".course-description").text(e.description);
@@ -315,7 +322,7 @@ function updatePagination() {
     }
     let min = Math.max(0, page - 2);
     let max = Math.min(length, page + 3);
-    for (let i = min; i < max; i++){
+    for (let i = min; i < max; i++) {
         pagination.append(`
         <li class="page-item ${i == page ? "active" : ""}">
             <a href="#${i+1}" data-page="${i}" class="page-link">${i+1}</a>
@@ -10611,6 +10618,90 @@ if ( !noGlobal ) {
 return jQuery;
 } );
 
+
+/***/ }),
+
+/***/ 96:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "terms", function() { return terms; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plan", function() { return plan; });
+/* harmony export (immutable) */ __webpack_exports__["add"] = add;
+/* harmony export (immutable) */ __webpack_exports__["remove"] = remove;
+/* harmony export (immutable) */ __webpack_exports__["get"] = get;
+/**
+ * @type {String[]}
+ */
+var terms = [
+    "Other",
+    "1A",
+    "1B",
+    "2A",
+    "2B",
+    "3A",
+    "3B",
+    "4A",
+    "4B",
+]
+
+if (!localStorage.coursePlan) localStorage.coursePlan = "{}";
+
+/**
+ * @type {Object.<string, string[]>}
+ */
+var plan = JSON.parse(localStorage.coursePlan);
+
+function savePlan() {
+    localStorage.coursePlan = JSON.stringify(plan);
+}
+
+/**
+ * 
+ * @param {String} term 
+ * @param {String} courseCode 
+ */
+function add(term, courseCode) {
+    if (!plan[term]) {
+        plan[term] = [courseCode];
+    } else {
+        plan[term].push(courseCode)
+        plan[term].sort();
+    }
+    savePlan();
+}
+
+/**
+ * 
+ * @param {String} courseCode 
+ */
+function remove(courseCode) {
+    for (let term of terms) {
+        if (!plan[term]) {
+            plan[term] = [];
+        } else {
+            let index = plan[term].indexOf(courseCode);
+            if (index > -1) plan[term].splice(index, 1);
+        }
+    }
+    savePlan();
+}
+
+/**
+ * 
+ * @param {String} courseCode 
+ */
+function get(courseCode) {
+    for (let term of terms) {
+        if (!plan[term]) {
+            plan[term] = [];
+        } else {
+            if (plan[term].includes(courseCode)) return term;
+        }
+    }
+    return "";
+}
 
 /***/ })
 

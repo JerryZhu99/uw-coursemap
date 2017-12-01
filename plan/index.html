@@ -1,0 +1,55 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale = 1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>UW Course Map</title>
+<link href="/uw-coursemap/styles.css" rel="stylesheet"></head>
+<body class="d-flex flex-column">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand mb-0 h1" href="/uw-coursemap/">UW Course Map</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link " href="/uw-coursemap/">Map</a>
+                <a class="nav-item nav-link " href="/uw-coursemap/courses">Courses</a>
+                <a class="nav-item nav-link active" href="/uw-coursemap/plan">Plan</a>
+                <a class="nav-item nav-link " href="/uw-coursemap/about">About</a>
+            </div>
+        </div>
+    </nav>    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h2>
+                    Plan
+                </h2>
+                <hr>
+                <h3>
+                    Overview
+                </h3>
+                <table id="plan-overview" class="table table-bordered table-sm" style="table-layout: fixed;">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Other</th>
+                            <th>1A</th>
+                            <th>1B</th>
+                            <th>2A</th>
+                            <th>2B</th>
+                            <th>3A</th>
+                            <th>3B</th>
+                            <th>4A</th>
+                            <th>4B</th>
+                        </tr>
+                    </thead>
+                    <tbody id="courses">
+    
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div><script type="text/javascript" src="/uw-coursemap/bundle-all.js"></script><script type="text/javascript" src="/uw-coursemap/bundle-plan.js"></script></body>
+
+</html>
