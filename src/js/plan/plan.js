@@ -8,7 +8,7 @@ $(document).ready(function(){
     for(let i=0; i<rows; i++){
         var row = `
         <tr>
-            ${plan.terms.map(e=>plan.plan[e][i]?`<td>${plan.plan[e][i]}</td>`:"<td>Empty</td>").join("")}
+            ${plan.terms.map(e=>plan.plan[e][i]?`<td class="border border-primary">${plan.plan[e][i]}</td>`:`<td class="border border-primary"></td>`).join("")}
         </tr>
         `
         $("#courses").append(row);
