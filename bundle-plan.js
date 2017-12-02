@@ -61,12 +61,12 @@ var app =
 /******/ 	__webpack_require__.p = "/uw-coursemap/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 476);
+/******/ 	return __webpack_require__(__webpack_require__.s = 480);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 476:
+/***/ 480:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -78,19 +78,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
-__WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(function(){
+__WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(function () {
     console.log(__WEBPACK_IMPORTED_MODULE_1_plan__)
-    let rows = Math.max(...Object.values(__WEBPACK_IMPORTED_MODULE_1_plan__["plan"]).map(e=>e.length))
-    for(let i=0; i<rows; i++){
+    let rows = Math.max(...Object.values(__WEBPACK_IMPORTED_MODULE_1_plan__["plan"]).map(e => e.length))
+    for (let i = 0; i < rows; i++) {
         var row = `
         <tr>
-            ${__WEBPACK_IMPORTED_MODULE_1_plan__["terms"].map(e=>__WEBPACK_IMPORTED_MODULE_1_plan__["plan"][e][i]?`<td>${__WEBPACK_IMPORTED_MODULE_1_plan__["plan"][e][i]}</td>`:"<td>Empty</td>").join("")}
+            ${__WEBPACK_IMPORTED_MODULE_1_plan__["terms"].map(e=>__WEBPACK_IMPORTED_MODULE_1_plan__["plan"][e][i] ? 
+                `<td class="border border-primary">
+                    <a href="/uw-coursemap/courses#course=${__WEBPACK_IMPORTED_MODULE_1_plan__["plan"][e][i]}">
+                        ${__WEBPACK_IMPORTED_MODULE_1_plan__["plan"][e][i]}
+                    </a>
+                </td>`:
+                `<td class="border border-primary"></td>`).join("")}
         </tr>
         `
         __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#courses").append(row);
-        
+
     }
-    if(__WEBPACK_IMPORTED_MODULE_1_plan__["plan"][__WEBPACK_IMPORTED_MODULE_1_plan__["terms"][0]].length == 0)
+    if (__WEBPACK_IMPORTED_MODULE_1_plan__["plan"][__WEBPACK_IMPORTED_MODULE_1_plan__["terms"][0]].length == 0)
         __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#plan-overview tr > :first-child").hide();
 });
 
