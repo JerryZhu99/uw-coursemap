@@ -22,11 +22,17 @@ var search = {
 var itemsShown = 10;
 
 var parsed = queryString.parse(location.hash);
-search.all = parsed.all;
-if(typeof parsed.subjects !== 'undefined') search.subjects = parsed.subjects;
-if(typeof parsed.number !== 'undefined') search.number = parsed.number;
-if(typeof parsed.undergrad !== 'undefined') search.undergrad = parsed.undergrad == 'true';
-if(typeof parsed.graduate !== 'undefined') search.graduate = parsed.graduate == 'true';
+if (typeof parsed.course !== 'undefined') {
+    search.subjects = parsed.course.split(" ")[0];
+    search.number = parsed.course.split(" ")[1];
+    search.undergrad = true;
+    search.graduate = true;
+}
+if (typeof parsed.all !== 'undefined') search.all = parsed.all;
+if (typeof parsed.subjects !== 'undefined') search.subjects = parsed.subjects;
+if (typeof parsed.number !== 'undefined') search.number = parsed.number;
+if (typeof parsed.undergrad !== 'undefined') search.undergrad = parsed.undergrad == 'true';
+if (typeof parsed.graduate !== 'undefined') search.graduate = parsed.graduate == 'true';
 search.page = isNaN(parseInt(parsed.page)) ? 0 : parseInt(parsed.page);
 console.log(search.page)
 
@@ -88,7 +94,8 @@ export function getFilter(e) {
     return true;
 
 }
-function searchChanged(){
+
+function searchChanged() {
     search.page = 0;
     updateData();
 }
@@ -100,7 +107,7 @@ function updateData() {
     search.undergrad = $("#undergradsearch").is(":checked");
     search.graduate = $("#graduatesearch").is(":checked");
     location.hash = queryString.stringify(search);
-    
+
     data.filter(getFilter);
     $("#results").empty();
     for (let e of data.courses.slice(search.page * itemsShown, (search.page + 1) * itemsShown)) {
