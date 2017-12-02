@@ -1,37 +1,54 @@
 import * as data from "data";
 import * as plan from "plan";
+import * as queryString from "query-string";
 
 /**
  * @namespace
- * @property {string} general
+ * @property {string} all
  * @property {boolean} searching
  * @property {string} subjects
  * @property {boolean}  undergrad
  * @property {boolean} graduate
  */
 var search = {
-    general: "",
+    all: "",
     subjects: "",
     number: "",
     undergrad: true,
     graduate: false,
+    page: 0,
 }
 
-var page = 0;
 var itemsShown = 10;
+
+var parsed = queryString.parse(location.hash);
+search.all = parsed.all;
+if(typeof parsed.subjects !== 'undefined') search.subjects = parsed.subjects;
+if(typeof parsed.number !== 'undefined') search.number = parsed.number;
+if(typeof parsed.undergrad !== 'undefined') search.undergrad = parsed.undergrad == 'true';
+if(typeof parsed.graduate !== 'undefined') search.graduate = parsed.graduate == 'true';
+search.page = isNaN(parseInt(parsed.page)) ? 0 : parseInt(parsed.page);
+console.log(search.page)
+
+location.hash = queryString.stringify(search)
 
 /**
  * Initializes the search with event handlers.
  */
 export function init() {
-    $("#search").change(updateData);
-    $("#subjectsearch").change(updateData);
-    $("#numbersearch").change(updateData);
-    $("#undergradsearch").change(updateData);
-    $("#graduatesearch").change(updateData);
+    $("#search").val(search.all);
+    $("#subjectsearch").val(search.subjects);
+    $("#numbersearch").val(search.number);
+    $("#undergradsearch").prop("checked", search.undergrad);
+    $("#graduatesearch").prop("checked", search.graduate);
+    $("#search").change(searchChanged);
+    $("#subjectsearch").change(searchChanged);
+    $("#numbersearch").change(searchChanged);
+    $("#undergradsearch").change(searchChanged);
+    $("#graduatesearch").change(searchChanged);
     $(".pagination").delegate("a", "click", function () {
-        page = $(this).data("page");
-        updateData();
+        search.page = $(this).data("page");
+        updateData(true);
     })
     updateData();
 }
@@ -54,7 +71,7 @@ export function getFilter(e) {
     if (!search.graduate && e.academic_level == "graduate") {
         return false;
     }
-    if (search.general && !search.general.split(",").some(
+    if (search.all && !search.all.split(",").some(
             s => ([
                 e.subject + " " + e.catalog_number,
                 e.subject,
@@ -71,17 +88,22 @@ export function getFilter(e) {
     return true;
 
 }
+function searchChanged(){
+    search.page = 0;
+    updateData();
+}
 
 function updateData() {
-    search.general = $("#search").val();
+    search.all = $("#search").val();
     search.subjects = $("#subjectsearch").val();
     search.number = $("#numbersearch").val();
     search.undergrad = $("#undergradsearch").is(":checked");
     search.graduate = $("#graduatesearch").is(":checked");
-
+    location.hash = queryString.stringify(search);
+    
     data.filter(getFilter);
     $("#results").empty();
-    for (let e of data.courses.slice(page * itemsShown, (page + 1) * itemsShown)) {
+    for (let e of data.courses.slice(search.page * itemsShown, (search.page + 1) * itemsShown)) {
 
         $("#results").append($("#course-template").html())
         let elem = $("#results").children().last();
@@ -116,7 +138,7 @@ function updatePagination() {
     let length = Math.ceil(data.courses.length / 10);
     let pagination = $(".pagination");
     pagination.empty()
-    if (page == 0) {
+    if (search.page == 0) {
         pagination.append(`
         <li class="page-item disabled">
             <span class="page-link">First</span>
@@ -130,26 +152,26 @@ function updatePagination() {
     } else {
         pagination.append(`
         <li class="page-item">
-            <a href="#${1}" data-page="${0}" class="page-link">First</a>
+            <a href="javascript:void(0)" data-page="${0}" class="page-link">First</a>
         </li>
         `)
         pagination.append(`
         <li class="page-item">
-            <a href="#${page}" data-page="${page - 1}" class="page-link">Previous</a>
+            <a href="javascript:void(0)" data-page="${search.page - 1}" class="page-link">Previous</a>
         </li>
         `)
     }
-    let min = Math.max(0, page - 2);
-    let max = Math.min(length, page + 3);
+    let min = Math.max(0, search.page - 2);
+    let max = Math.min(length, search.page + 3);
     for (let i = min; i < max; i++) {
         pagination.append(`
-        <li class="page-item ${i == page ? "active" : ""}">
-            <a href="#${i+1}" data-page="${i}" class="page-link">${i+1}</a>
+        <li class="page-item ${i == search.page ? "active" : ""}">
+            <a href="javascript:void(0)" data-page="${i}" class="page-link">${i+1}</a>
         </li>
         `)
 
     }
-    if (page == length - 1) {
+    if (search.page == length - 1) {
         pagination.append(`
         <li class="page-item disabled">
             <span class="page-link">Next</span>
@@ -163,13 +185,13 @@ function updatePagination() {
     } else {
         pagination.append(`
         <li class="page-item">
-            <a href="#${page + 2}" data-page="${page + 1}" class="page-link">Next</a>
+            <a href="javascript:void(0)" data-page="${search.page + 1}" class="page-link">Next</a>
         </li>
         `)
 
         pagination.append(`
         <li class="page-item">
-            <a href="#${length}" data-page="${length - 1}" class="page-link">Last</a>
+            <a href="javascript:void(0)" data-page="${length - 1}" class="page-link">Last</a>
         </li>
         `)
 
